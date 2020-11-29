@@ -5,17 +5,24 @@ import './Particle.css'
 const Particle = () =>{
     return(
         <Particles className='particle'
-        params={{
-              particles: {
-                  line_linked: {
-                      shadow: {
-                          enable: true,
-                          color: "#3CA9D1",
-                          blur: 5
-                      }
-                  }
-              }
-          }}
+                params={{
+                "particles": {
+                    "number": {
+                        "value": 50
+                    },
+                    "size": {
+                        "value": 3
+                    }
+                },
+                "interactivity": {
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "repulse"
+                        }
+                    }
+                }
+            }} 
       />
     )
 }
