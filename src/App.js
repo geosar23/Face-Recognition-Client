@@ -11,10 +11,16 @@ function App() {
   const [inputValue,setInputValue]=useState("");
 
   const onInputChange = event => {
-    event.preventDefault() //nikos stuff
+    event.preventDefault() //Thanks Nik man
     console.log(event.target.value);
     setInputValue(event.target.value);
   };
+
+  const onSubmitButton=(event)=>{
+    event.preventDefault()
+    console.log('click')
+  }
+
 
   return (
     <div className="App">
@@ -22,7 +28,10 @@ function App() {
         <Navigation/>
         <Logo/>
         <Rank/>
-        <ImageLinkForm onChange={onInputChange} value={inputValue}/>
+        <ImageLinkForm 
+          onChange={onInputChange} value={inputValue}
+          onSubmitButton={onSubmitButton} 
+          />
         {/*<FaceRecognition/>*/}
     </div>
   );
