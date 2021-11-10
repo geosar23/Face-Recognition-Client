@@ -15,26 +15,47 @@ const app = new Clarifai.App({
 function App() {
 
   const [inputValue,setInputValue]=useState("");
+  const [imageUrl,setImageUrl]=useState("")
+  const [error,setError]=useState(null)
+  const [box,setBox]=useState({})
+
+  const calculateFaceLocation = (data) => {
+    const clarifaiFace=data.outputs[0].data.regions[0].region_info.bounding_box;
+    const image=document.getElementById('inputImage')
+    const width=Number(image.width)
+    const height=Number(image.height)
+    return {
+      leftCol:clarifaiFace.left_col * width,
+      topRow: clarifaiFace.top_row * height,
+      rightCol: width - (clarifaiFace.right_col*width),
+      bottomRow:height - (clarifaiFace.bottom_row*height)
+    }
+  }
+
+  const displayFaceBox = (box) => {
+    setBox(box)
+    console.log(box)
+  }
 
   const onInputChange = event => {
-    event.preventDefault() //Thanks Nik man
-    console.log(event.target.value);
-    setInputValue(event.target.value);
+    setInputValue(event.target.value)
   };
 
+
   const onSubmitButton=(event)=>{
-    event.preventDefault()
-    console.log('click')
+    setImageUrl(inputValue)
+    console.log(inputValue)
     app.models
-    .predict("45fb9a671625463fa646c3523a3087d5","https://samples.clarifai.com/face-det.jpg")
-    .then(
-      function(response){
-        console.log(response)
-      },
-      function(err){
-        //there was an error
-      }
-    )
+    .predict(Clarifai.FACE_DETECT_MODEL,inputValue)
+    .then(response=>{
+      displayFaceBox(calculateFaceLocation(response)) 
+      })
+    .catch(error=>{
+      console.log('error')
+      console.log({error})
+      setError(error.message)
+      
+    })
   }
 
 
@@ -48,7 +69,11 @@ function App() {
           onChange={onInputChange} value={inputValue}
           onSubmitButton={onSubmitButton} 
           />
-        <FaceRecognition/>
+          <span>{error}</span>
+        <FaceRecognition 
+          imageUrl={imageUrl}
+          box={box}
+        />
     </div>
   );
 }
