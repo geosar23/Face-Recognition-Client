@@ -5,14 +5,14 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition.js'
 import Logo from './components/Logo/logo.js'
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm.js'
 import Rank from './components/Rank/Rank.js'
-import Particle from './components/Particles/Particle.js'
+import ParticlesBg from 'particles-bg'
 import './App.css'
 import SignIn from './components/Signin/SignIn.js';
 import Register from './components/Register/Register'
 
 const app = new Clarifai.App({
   apiKey: '9c7d04bafee74c2e852554c07749af15'
-  });
+});
 
 function App() {
 
@@ -74,7 +74,7 @@ function App() {
 
   return (
     <div className="App">
-        <Particle/>         
+        <ParticlesBg type="circle" bg={true} />     
         <Navigation onRouteChange={onRouteChange} signIn={signIn}/>
         {route==='home' 
           ? <div>
