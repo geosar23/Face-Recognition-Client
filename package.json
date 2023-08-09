@@ -1,6 +1,6 @@
 {
   "name": "face-recognition-app",
-  "homepage": "https://geosar23.github.io/Face-Recognition-App/",
+  "homepage": "http://geosar23.github.io/Face-Recognition-App",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
