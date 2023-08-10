@@ -1,4 +1,4 @@
-import React , {useState} from 'react'
+import React , { useEffect, useState} from 'react'
 import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/navigation.js'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition.js'
@@ -17,11 +17,19 @@ const app = new Clarifai.App({
 function App() {
 
   const [inputValue,setInputValue]=useState("");
-  const [imageUrl,setImageUrl]=useState("")
-  const [error,setError]=useState(null)
-  const [box,setBox]=useState({})
-  const [route,setRoute]=useState('signin')
-  const [signIn,setSignIn]=useState(false)
+  const [imageUrl,setImageUrl]=useState("");
+  const [error,setError]=useState(null);
+  const [box,setBox]=useState({});
+  const [route,setRoute]=useState('signin');
+  const [signIn,setSignIn]=useState(false);
+
+  useEffect(() => {
+
+    fetch('http://localhost:5000').then(response => {
+      console.log(`Server respond with status ${response.status}`);
+    });
+
+  });
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace=data.outputs[0].data.regions[0].region_info.bounding_box;
