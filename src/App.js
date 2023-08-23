@@ -11,7 +11,8 @@ import SignIn from './components/Signin/SignIn.js';
 import Register from './components/Register/Register'
 
 const app = new Clarifai.App({
-  apiKey: '9c7d04bafee74c2e852554c07749af15'
+  // apiKey: '9c7d04bafee74c2e852554c07749af15'
+  apiKey: '46ef13ce5b9142009d1a09e67843bc1b'
 });
 
 function App() {
@@ -22,12 +23,21 @@ function App() {
   const [box,setBox]=useState({});
   const [route,setRoute]=useState('signin');
   const [signIn,setSignIn]=useState(false);
+  const [user, setUser] = useState({
+    id: "",
+    name: "",
+    email: "",
+    password: "",
+    entries: null,
+    score: null,
+    joined: null
+  });
 
   useEffect(() => {
 
-    fetch('http://localhost:5000').then(response => {
-      console.log(`Server respond with status ${response.status}`);
-    });
+    // fetch('http://localhost:5000').then(response => {
+    //   console.log(`Server respond with status ${response.status}`);
+    // });
 
   });
 
@@ -53,6 +63,10 @@ function App() {
     setInputValue(event.target.value)
   };
 
+  const loadUser = (data) => {
+    setUser(data);
+  }
+
 
   const onSubmitButton=(event)=>{
     setImageUrl(inputValue)
@@ -76,6 +90,11 @@ function App() {
     }else if(route === 'home'){
       setSignIn(true)
     }
+
+    route = (route === 'signout') ? 
+      'signin' : 
+      route;
+    
     setRoute(route)
   }
 

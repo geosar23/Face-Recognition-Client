@@ -21,6 +21,11 @@ class SignIn extends React.Component {
 
     onSubmitSignIn = () => {
 
+        console.log({
+            email: this.state.signInEmail,
+            password: this.state.signInPassword
+        })
+
         fetch('http://localhost:5000/signin', {
             method: 'post',
             headers: {
@@ -36,6 +41,9 @@ class SignIn extends React.Component {
             console.log(data)
             if(!data.success) {
                 return alert("Credentials are not correct");
+            }
+            if(!data.user) {
+                return alert("User not found");
             }
             console.log(this.state);
             this.props.onRouteChange('home');
