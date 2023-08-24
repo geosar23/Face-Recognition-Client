@@ -9,6 +9,8 @@ import ParticlesBg from 'particles-bg'
 import './App.css'
 import SignIn from './components/Signin/SignIn.js';
 import Register from './components/Register/Register'
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const app = new Clarifai.App({
   // apiKey: '9c7d04bafee74c2e852554c07749af15'
@@ -28,8 +30,8 @@ function App() {
     name: "",
     email: "",
     password: "",
-    entries: null,
-    score: null,
+    entries: 0,
+    score: 0,
     joined: null
   });
 
@@ -40,6 +42,28 @@ function App() {
     // });
 
   });
+
+  const loadUser = (data) => {
+    setUser({
+      id: data.id,
+      name: data.name,
+      emai: data.email,
+      password: data.password,
+      entries: data.entries,
+      score: data.score,
+      joined: data.joined
+    });
+
+    setTimeout(() => {
+      console.log("1",user)
+    }, 1000);
+    
+    setTimeout(() => {
+      console.log("2",user)
+    }, 5000);
+
+    
+  }
 
   const calculateFaceLocation = (data) => {
     const clarifaiFace=data.outputs[0].data.regions[0].region_info.bounding_box;
@@ -62,11 +86,6 @@ function App() {
   const onInputChange = event => {
     setInputValue(event.target.value)
   };
-
-  const loadUser = (data) => {
-    setUser(data);
-  }
-
 
   const onSubmitButton=(event)=>{
     setImageUrl(inputValue)
@@ -98,26 +117,23 @@ function App() {
     setRoute(route)
   }
 
-
   return (
     <div className="App">
-        <ParticlesBg type="circle" bg={true} />     
+        <ParticlesBg type="circle" bg={true} />
+		    <ToastContainer theme="colored"/>
         <Navigation onRouteChange={onRouteChange} signIn={signIn}/>
-        {route==='home' 
-          ? <div>
-              <Logo />
-              <Rank />
-              <ImageLinkForm onChange={onInputChange} value={inputValue} onSubmitButton={onSubmitButton}/>
-              <FaceRecognition imageUrl={imageUrl} box={box}/>
-          </div>
-          : (route === 'signin') 
-          ? <SignIn onRouteChange={onRouteChange}/>
-          : <Register onRouteChange={onRouteChange}/>
+        {route==='home' ? 
+			<div>
+				<Logo />
+				<Rank user={user}/>
+				<ImageLinkForm onChange={onInputChange} value={inputValue} onSubmitButton={onSubmitButton}/>
+				<FaceRecognition imageUrl={imageUrl} box={box}/>
+         	 </div>
+		: (route === 'signin') ? 
+			<SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>
+          : <Register loadUser={loadUser} onRouteChange={onRouteChange}/>
           
-         }
-       
-         
-        
+        }  
     </div>
   );
 }

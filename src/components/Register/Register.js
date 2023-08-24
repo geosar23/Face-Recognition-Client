@@ -1,5 +1,6 @@
 import React from "react";
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 class Register extends React.Component {
 
     constructor(props) {
@@ -42,15 +43,15 @@ class Register extends React.Component {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
-            if(!data.success) {
-                return alert("Credentials are not correct");
-            }
-            if(!data.user) {
-                return alert("Error while trying to register please refresh and try again");
+            console.log("data",data)
+            
+           if(!data.success) {
+                let msg = data.message || "Error while trying to register, please try again";
+                toast.error(msg)
+                return; 
             }
 
-            // this.props.loadUser(data.user);
+            this.props.loadUser(data.user);
 
             this.props.onRouteChange('home');
         })

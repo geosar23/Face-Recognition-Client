@@ -1,4 +1,6 @@
 import React from "react";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class SignIn extends React.Component {
 
@@ -38,14 +40,14 @@ class SignIn extends React.Component {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
+            console.log("s",data)
             if(!data.success) {
-                return alert("Credentials are not correct");
+                let msg = data.message || "Credentials are not correct";
+                toast.error(msg)
+                return; 
             }
-            if(!data.user) {
-                return alert("User not found");
-            }
-            console.log(this.state);
+            
+            this.props.loadUser(data.user);
             this.props.onRouteChange('home');
         })
     }
