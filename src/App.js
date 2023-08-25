@@ -9,13 +9,68 @@ import ParticlesBg from 'particles-bg'
 import './App.css'
 import SignIn from './components/Signin/SignIn.js';
 import Register from './components/Register/Register'
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const app = new Clarifai.App({
     // apiKey: '9c7d04bafee74c2e852554c07749af15'
     apiKey: '46ef13ce5b9142009d1a09e67843bc1b'
+    // apiKey: '0dcc5597fb924e6c9d77683241494f63'
 });
+
+const setupClarifaiAPI = (imageUrl) => {
+
+    // https://docs.clarifai.com/api-guide/predict/images
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    // In this section, we set the user authentication, user and app ID, model details, and the URL
+    // of the image we want as an input. Change these strings to run your own example.
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Your PAT (Personal Access Token) can be found in the portal under Authentification
+    const PAT = '0dcc5597fb924e6c9d77683241494f63';
+    // Specify the correct user_id/app_id pairings
+    // Since you're making inferences outside your app's scope
+    const USER_ID = 'george_sarama';       
+    const APP_ID = '46ef13ce5b9142009d1a09e67843bc1b';
+    // Change these to whatever model and image URL you want to use
+    const MODEL_ID = 'face-detection';
+    // const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';   
+    // const IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg';
+    const IMAGE_URL = imageUrl;
+
+    // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
+    // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
+    // this will default to the latest version_id
+    // fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
+
+    const raw = JSON.stringify({
+        "user_app_id": {
+            "user_id": USER_ID,
+            "app_id": APP_ID
+        },
+        "inputs": [
+            {
+                "data": {
+                    "image": {
+                        "url": IMAGE_URL
+                    }
+                }
+            }
+        ]
+    });
+
+    const requestOptions = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Key ' + PAT
+        },
+        body: raw
+    };
+
+    return requestOptions;
+
+}
 
 function App() {
 
@@ -85,20 +140,63 @@ function App() {
     };
 
     const onSubmitButton=(event)=>{
+
+        if(!inputValue) {
+            toast.warning("Please provide a url of an image");
+            return;
+        }
+
+        console.log("onSubmitButton")
         setImageUrl(inputValue)
-        console.log(inputValue)
+        console.log("inputValue",inputValue)
+        console.log("userId", user.id)
 
-        app.models.predict(Clarifai.FACE_DETECT_MODEL,inputValue).then(response=>{
-            if(response) {
+        // app.models.predict(Clarifai.FACE_DETECT_MODEL,inputValue)
+        // app.models.predict('face-detection', inputValue)
+        fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", setupClarifaiAPI(inputValue))
+            .then(response => response.json())
+            .then(response=>{
 
-            }
-            displayFaceBox(calculateFaceLocation(response)) 
-        })
-        .catch(error=>{
-            console.log('error')
-            console.log({error})
-            setError(error.message)   
-        })
+                console.log("response",response)
+                console.log("userId", user.id)
+                
+                //Score how many faces you found
+                const facesRecognized = response?.outputs[0]?.data?.regions?.length || 0;
+                console.log("facesRecognized", facesRecognized)
+                if(response.status.code === 10000) {
+
+                    fetch('http://localhost:5000/image', {
+                        method: 'put',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            id: user.id,
+                            score: facesRecognized
+                        })
+                    }).then(res => res.json())
+                    .then((res) => {
+                        
+                        if(!res.success || !res.score) {
+                            console.log(res)
+                            toast.error("Error: Server was not able to log your score please try again");
+                            return;
+                        }
+
+                        setUser({
+                            ...user,
+                            score: res.score,
+                        });
+                        
+                    })
+                }
+                displayFaceBox(calculateFaceLocation(response)) 
+            })
+            .catch(error=>{
+                toast.error(error?.message || "Error when trying to call the Clarifai API");
+                console.log('error')
+                console.log({error})
+                setError(error.message);
+                return;
+            })
     }
 
     const onRouteChange = (route) => {
