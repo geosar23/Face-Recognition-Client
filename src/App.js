@@ -118,21 +118,39 @@ function App() {
     }
 
     const calculateFaceLocation = (data) => {
-        const clarifaiFace=data.outputs[0].data.regions[0].region_info.bounding_box;
-        const image=document.getElementById('inputImage')
-        const width=Number(image.width)
-        const height=Number(image.height)
-        return {
-            leftCol:clarifaiFace.left_col * width,
-            topRow: clarifaiFace.top_row * height,
-            rightCol: width - (clarifaiFace.right_col*width),
-            bottomRow:height - (clarifaiFace.bottom_row*height)
+        console.log("data", data)
+
+        const facesArray = data.outputs[0]?.data?.regions;
+
+
+        console.log("facesArray",facesArray)
+
+        const numberOfFaces = data.outputs[0]?.data?.regions?.length || 0;
+
+        if(!numberOfFaces) {
+            toast.info("No faces recognized in the photo");
+            return;
         }
+        
+        return facesArray.map((face, index) => {
+            const clarifaiFace=face.region_info.bounding_box;
+            console.log(index,clarifaiFace)
+            const image=document.getElementById('inputImage')
+            const width=Number(image.width)
+            const height=Number(image.height)
+            return {
+                leftCol:clarifaiFace.left_col * width,
+                topRow: clarifaiFace.top_row * height,
+                rightCol: width - (clarifaiFace.right_col*width),
+                bottomRow:height - (clarifaiFace.bottom_row*height)
+            }
+        })
     }
 
-    const displayFaceBox = (box) => {
-        setBox(box)
-        console.log(box)
+    const displayFaceBox = (boxes) => {
+        console.log(boxes)
+
+        boxes.forEach(box => setBox(box))
     }
 
     const onInputChange = event => {
