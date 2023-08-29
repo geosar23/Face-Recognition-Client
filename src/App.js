@@ -11,6 +11,7 @@ import SignIn from './components/Signin/SignIn.js';
 import Register from './components/Register/Register'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const app = new Clarifai.App({
     // apiKey: '9c7d04bafee74c2e852554c07749af15'
@@ -89,6 +90,7 @@ function App() {
         score: 0,
         joined: null
     });
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // fetch('http://localhost:5000').then(response => {
@@ -171,10 +173,11 @@ function App() {
 
         // app.models.predict(Clarifai.FACE_DETECT_MODEL,inputValue)
         // app.models.predict('face-detection', inputValue)
+        setLoading(true);
         fetch("https://api.clarifai.com/v2/models/" + 'face-detection' + "/outputs", setupClarifaiAPI(inputValue))
             .then(response => response.json())
             .then(response=>{
-
+                setLoading(false);
                 console.log("response",response)
                 console.log("userId", user.id)
                 
@@ -192,7 +195,7 @@ function App() {
                         })
                     }).then(res => res.json())
                     .then((res) => {
-                        
+
                         if(!res.success || !res.score) {
                             console.log(res)
                             toast.error("Error: Server was not able to log your score please try again");
@@ -209,6 +212,7 @@ function App() {
                 displayFaceBox(calculateFaceLocation(response)) 
             })
             .catch(error=>{
+                setLoading(false);
                 toast.error(error?.message || "Error when trying to call the Clarifai API");
                 console.log('error')
                 console.log({error})
@@ -229,23 +233,23 @@ function App() {
     }
 
     return (
-    <div className="App">
-        <ParticlesBg type="circle" bg={true} />
-            <ToastContainer theme="colored"/>
-        <Navigation onRouteChange={onRouteChange} signIn={signIn}/>
-        {route==='home' ? 
-            <div>
-                <Logo />
-                <Rank user={user}/>
-                <ImageLinkForm onChange={onInputChange} value={inputValue} onSubmitButton={onSubmitButton}/>
-                <FaceRecognition imageUrl={imageUrl} box={box}/>
-                </div>
-        : (route === 'signin') ? 
-            <SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>
-            : <Register loadUser={loadUser} onRouteChange={onRouteChange}/>
-            
-        }  
-    </div>
+        <div className="App">    
+            <ParticlesBg type="circle" bg={true} />
+                <ToastContainer theme="colored"/>
+            <Navigation onRouteChange={onRouteChange} signIn={signIn}/>
+            {route==='home' ? 
+                <div>
+                    <Logo />
+                    <Rank user={user}/>
+                    <ImageLinkForm loading={loading} onChange={onInputChange} value={inputValue} onSubmitButton={onSubmitButton}/>
+                    <FaceRecognition imageUrl={imageUrl} box={box}/>
+                    </div>
+            : (route === 'signin') ? 
+                <SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>
+                : <Register loadUser={loadUser} onRouteChange={onRouteChange}/>
+                
+            }
+        </div>
     );
 }
 

@@ -8,7 +8,8 @@ class SignIn extends React.Component {
         super(props);
         this.state = {
             signInEmail: '',
-            signInPassword: ''
+            signInPassword: '',
+            isLoading: false
         }
     }
 
@@ -27,7 +28,7 @@ class SignIn extends React.Component {
             email: this.state.signInEmail,
             password: this.state.signInPassword
         })
-
+        this.setState({ isLoading: true });
         fetch('http://localhost:5000/signin', {
             method: 'post',
             headers: {
@@ -40,6 +41,7 @@ class SignIn extends React.Component {
         })
         .then(res => res.json())
         .then(data => {
+            this.setState({ isLoading: false });
             console.log("s",data)
             if(!data.success) {
                 let msg = data.message || "Credentials are not correct";
@@ -50,11 +52,17 @@ class SignIn extends React.Component {
             this.props.loadUser(data.user);
             this.props.onRouteChange('home');
         })
+        .catch(error=>{
+            this.setState({ isLoading: false });
+            toast.error(error?.message || "Server is unable to connect");
+            return;
+        });
     }
 
     render() {
 
         const { onRouteChange } = this.props;
+        const { isLoading } = this.state;
 
         return(
             <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
@@ -84,12 +92,18 @@ class SignIn extends React.Component {
                             </div>
                         </fieldset>
                         <div className="">
-                            <input 
+                            <button
                                 onClick={this.onSubmitSignIn}
-                                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f4 dib" 
-                                type="submit" 
-                                value="Sign in"
-                            />
+                                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f4 dib button-100"
+                                type="submit"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <span className="spinner-border spinner-border-sm pl-5 pr-5" role="status" aria-hidden="true"></span>
+                                ) : (
+                                    "Sign in"
+                                )}
+                            </button>
                         </div>
                         <div className="lh-copy mt3">
                             <p onClick={()=>onRouteChange('register')} href="#0" className="f4 link dim black db pointer">Register</p>

@@ -1,20 +1,29 @@
-import React from 'react'
-import './ImageLinkForm.css'
+import React from 'react';
+import './ImageLinkForm.css';
 
-const ImageLinkForm=({onChange,onSubmitButton})=>{
-    return(
+const ImageLinkForm = ({loading, onChange, onSubmitButton }) => {
+
+    return (
         <div className='ma4 mt0'>
             <p className='f3'>
-                {'This Magic Brain will detect faces in your pictures . Give it a try'}
+                {'This Magic Brain will detect faces in your pictures. Give it a try'}
             </p>
-            <div className='form grow pa4 br3 shadow-5'>
-                <input className='f4 pa2 w-70 center' type='text' style={{WebkitBorderRadius:'5px'}} onChange={onChange}></input>
-                <button  onClick={onSubmitButton} className='grow f4 link ph3 pv2 dib white bg-light-purple' style={{WebkitBorderRadius:'5px'}}>
-                    Detect
+            <div className=''>
+                <input className='f4 pa2 w-70 center' type='text' style={{ WebkitBorderRadius: '5px' }} onChange={onChange} />
+                <button
+                    onClick={onSubmitButton}
+                    className={`grow f4 link ph3 pv2 dib white bg-light-purple button-150 ${loading ? 'disabled' : ''}`}
+                    style={{ WebkitBorderRadius: '5px' }}
+                >
+                    {loading ? (
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    ) : (
+                        'Detect'
+                    )}
                 </button>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default ImageLinkForm
+export default ImageLinkForm;

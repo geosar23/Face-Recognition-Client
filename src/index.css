@@ -14,5 +14,16 @@ code {
 
 button{
   cursor:pointer;
+}
 
+.button-150 {
+  width: 150px;
+}
+
+.button-120 {
+  width: 120px;
+}
+
+.button-100 {
+  width: 100px;
 }

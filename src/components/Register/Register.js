@@ -8,7 +8,8 @@ class Register extends React.Component {
         this.state = {
             email: '',
             password: '',
-            name: ''
+            name: '',
+            isLoading: false
         }
     }
     onEmailChange = (event) => {
@@ -30,6 +31,7 @@ class Register extends React.Component {
             password: this.state.password,
             name: this.state.name
         })
+        this.setState({ isLoading: true });
         fetch('http://localhost:5000/register', {
             method: 'post',
             headers: {
@@ -43,6 +45,7 @@ class Register extends React.Component {
         })
         .then(res => res.json())
         .then(data => {
+            this.setState({ isLoading: false });
             console.log("data",data)
             
            if(!data.success) {
@@ -55,11 +58,16 @@ class Register extends React.Component {
 
             this.props.onRouteChange('home');
         })
+        .catch(error=>{
+            this.setState({ isLoading: false });
+            toast.error(error?.message || "Server is unable to connect");
+            return;
+        });
     }
 
     render() {
 
-        const { onRouteChange } = this.props;
+        const { isLoading } = this.state;
 
         return(
             <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
@@ -99,12 +107,18 @@ class Register extends React.Component {
                             </div>
                         </fieldset>
                         <div className="">
-                            <input 
-                                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f4 dib" 
-                                type="submit" 
-                                value="Register"
+                            <button
                                 onClick={this.onRegister}
-                            />
+                                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f4 dib button-120"
+                                type="submit"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <span className="spinner-border spinner-border-sm pl-5 pr-5" role="status" aria-hidden="true"></span>
+                                ) : (
+                                    "Register"
+                                )}
+                            </button>
                         </div>
                     </div>
                 </main>
