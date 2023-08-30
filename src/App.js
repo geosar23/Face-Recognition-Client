@@ -78,7 +78,7 @@ function App() {
     const [inputValue,setInputValue]=useState("");
     const [imageUrl,setImageUrl]=useState("");
     const [error,setError]=useState(null);
-    const [box,setBox]=useState({});
+    const [boxes,setBoxes]=useState([]);
     const [route,setRoute]=useState('signin');
     const [signIn,setSignIn]=useState(false);
     const [user, setUser] = useState({
@@ -151,8 +151,7 @@ function App() {
 
     const displayFaceBox = (boxes) => {
         console.log(boxes)
-
-        boxes.forEach(box => setBox(box))
+        setBoxes(boxes);
     }
 
     const onInputChange = event => {
@@ -166,8 +165,10 @@ function App() {
             return;
         }
 
-        console.log("onSubmitButton")
+        
         setImageUrl(inputValue)
+
+        console.log("onSubmitButton")
         console.log("inputValue",inputValue)
         console.log("userId", user.id)
 
@@ -222,6 +223,11 @@ function App() {
     }
 
     const onRouteChange = (route) => {
+
+        //clean state
+        setImageUrl('')
+        setBoxes([])
+
         if(route === 'signout'){
             setSignIn(false);
         }else if(route === 'home'){
@@ -242,7 +248,7 @@ function App() {
                     <Logo />
                     <Rank user={user}/>
                     <ImageLinkForm loading={loading} onChange={onInputChange} value={inputValue} onSubmitButton={onSubmitButton}/>
-                    <FaceRecognition imageUrl={imageUrl} box={box}/>
+                    <FaceRecognition imageUrl={imageUrl} boxes={boxes}/>
                     </div>
             : (route === 'signin') ? 
                 <SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>
