@@ -225,6 +225,7 @@ function App() {
     const onRouteChange = (route) => {
 
         //clean state
+        setInputValue('')
         setImageUrl('')
         setBoxes([])
 
