@@ -243,7 +243,7 @@ function App() {
         <div className="App">    
             <ParticlesBg type="circle" bg={true} />
                 <ToastContainer theme="colored"/>
-            <Navigation onRouteChange={onRouteChange} signIn={signIn}/>
+            <Navigation onRouteChange={onRouteChange} signIn={signIn} user={user}/>
             {route==='home' ? 
                 <div>
                     <Logo />
