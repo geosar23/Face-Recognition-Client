@@ -5,7 +5,7 @@ import Tilt from 'react-parallax-tilt';
 
 const Logo=()=>{
     return(
-        <div className='ma4 mt0 grow'>
+        <div className='ma4 mt0 grow w-50 center'>
             <Tilt reverse axis="x" scale={1.2} perspective={700} reset={false}>
                 <div className="Tilt-inner pa3">
                     <img style={{paddingTop:'5px'}}alt='logo' src={brain}></img>
