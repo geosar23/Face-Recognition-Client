@@ -1,6 +1,7 @@
 import React from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import './Register.css'
 class Register extends React.Component {
 
     constructor(props) {
@@ -24,13 +25,71 @@ class Register extends React.Component {
         this.setState({name: event.target.value});
     }
 
+    validateEmail = (email) => {
+        // A simple email validation regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    validatePassword = (password) => {
+
+        const MIN_LENGTH = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumber = /\d/.test(password);
+        const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
+
+        if(password.length < MIN_LENGTH) {
+            console.log("Length not OK")
+            toast.error("Password should be at least 8 characters long");
+            return false;
+        }
+
+        if(!hasUpperCase) {
+            toast.error("Password should have at least 1 upper case character");
+            return false;
+        }
+        
+        if(!hasLowerCase) {
+            toast.error("Password should have at least 1 lower case character");
+            return false;
+        }
+        
+        if(!hasNumber) {
+            toast.error("Password should be at least 1 number");
+            return false;
+        }
+
+        return true;
+    };
+
+    validateRegisterInput = () => {     
+        // Validate email
+        if (!this.validateEmail(this.state.email)) {
+            toast.error("Invalid email address");
+            return false;
+        }
+
+        // Validate name (assuming at least 2 characters)
+        if (this.state.name.length < 2) {
+            toast.error("Name should be at least 2 characters long");
+            return false;
+        }
+
+        // Validate password (assuming at least 6 characters)
+        if (!this.validatePassword(this.state.password)) {
+            return false;
+        }
+
+        return true;
+    }
+
     onRegister = () => {
 
-        console.log({
-            email: this.state.email,
-            password: this.state.password,
-            name: this.state.name
-        })
+        // if(!this.validateRegisterInput()) {
+        //     return;
+        // }
+
         this.setState({ isLoading: true });
         fetch('http://localhost:5000/register', {
             method: 'post',
