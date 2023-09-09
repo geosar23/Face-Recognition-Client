@@ -5,8 +5,9 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
     
     const handleDeleteAccount = () => {
 
+        //ensure delete is working
         fetch(`http://localhost:5000/user/${user.id}`, {
-            method: 'POST',
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
             }

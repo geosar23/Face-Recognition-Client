@@ -8,6 +8,10 @@ body {
   background: linear-gradient(89deg , #FF5EDF 0% ,#04c8de 100%);
 }
 
+p{
+  font-size: 1.5rem;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
