@@ -1,4 +1,4 @@
-import React , { useEffect, useState} from 'react'
+import React , { useEffect, useState, useRef} from 'react'
 import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/navigation.js'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition.js'
@@ -156,11 +156,19 @@ function App() {
     });
     const [loading, setLoading] = useState(false);
 
+    const ref = useRef(null);
+
     useEffect(() => {
         // fetch('http://localhost:5000').then(response => {
         //   console.log(`Server respond with status ${response.status}`);
         // });
     });
+
+    const scrollToImage = () => {
+        if(ref?.current) {
+            ref.current?.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     const loadUser = (data) => {
         setUser({
@@ -306,6 +314,8 @@ function App() {
                             return;
                         }
 
+                        toast.success(`Success, you claimed ${facesRecognized} points !`);
+
                         setUser({
                             ...user,
                             score: res.score,
@@ -314,7 +324,9 @@ function App() {
                     })
 
                     //Draw the boxes
-                    displayFaceBox(calculateFaceLocation(response, false)) 
+                    displayFaceBox(calculateFaceLocation(response, false));
+
+                    scrollToImage();
                 }
             })
             .catch(error=>{
@@ -382,7 +394,7 @@ function App() {
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({
                             id: user.id,
-                            score: facesRecognized
+                            score: facesRecognized*2
                         })
                     }).then(res => res.json())
                     .then((res) => {
@@ -393,10 +405,14 @@ function App() {
                             return;
                         }
 
+                        toast.success(`Success, you claimed ${facesRecognized * 2} points !`);
+
                         setUser({
                             ...user,
                             score: res.score,
                         });
+
+                        scrollToImage();
                         
                     })
 
@@ -461,9 +477,11 @@ function App() {
 
     return (
         <div className="App">    
+
             <ParticlesBg type="circle" bg={true} />
-                <ToastContainer theme="colored"/>
+            <ToastContainer theme="colored"/>
             <Navigation onRouteChange={onRouteChange} signIn={signIn} user={user}/>
+
             {route==='home' ? 
                 <div>
                     <Logo />
@@ -476,7 +494,9 @@ function App() {
                         fileValue={inputFile}
                         onLinkSubmtion={onLinkSubmtion} 
                         onFileUpload={onFileUpload}/>
-                    <FaceRecognition imageUrl={imageUrl} base64String={base64String} boxes={boxes}/>
+                        <div ref={ref} className='mb-5'>
+                            <FaceRecognition imageUrl={imageUrl} base64String={base64String} boxes={boxes} />
+                        </div>             
                     </div>
             : (route === 'signin') ? 
                 <SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>

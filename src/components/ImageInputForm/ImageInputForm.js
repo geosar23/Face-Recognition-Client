@@ -7,10 +7,10 @@ const ImageInputForm = ({loading, onURLchange, onFileChange, onLinkSubmtion, onF
         <div className='form-group'>
             <div className='form-group'>
                 <p>
-                    {'This Magic Brain A will detect faces in your pictures via url link for '}
-                    <span className='text-orange font-weight-bold'>1</span>
+                    {'This Magic Brain A will detect faces in your pictures via URL link for '}
+                    <span className='text-warning font-weight-bold' style={{ fontSize: '40px' }}>{'1'}</span>
                     {' point per face recognized'}
-                </p> 
+                </p>
                 <input className='form-control w-50 center' type='text' style={{ WebkitBorderRadius: '5px' }} onChange={onURLchange} />
                 <button
                     onClick={onLinkSubmtion}
@@ -26,7 +26,9 @@ const ImageInputForm = ({loading, onURLchange, onFileChange, onLinkSubmtion, onF
 
                 <div className="mt-5">
                     <p>
-                        {'This Magic Brain B will detect faces in your pictures via file uploading for 2 point per face recognized'}
+                        {'This Magic Brain B will detect faces in your pictures via file uploading for '}
+                        <span className='text-danger font-weight-bold' style={{ fontSize: '40px' }}>2</span>
+                        {' points per face recognized'}
                     </p>
                     <input className="center form-control w-50" type="file" id="formFile" onChange={onFileChange}/>
                 </div>
