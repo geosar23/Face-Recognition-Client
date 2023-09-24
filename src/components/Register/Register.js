@@ -1,43 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Register.css'
-class Register extends React.Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            email: '',
-            password: '',
-            name: '',
-            isLoading: false
-        }
-    }
-    onEmailChange = (event) => {
-        this.setState({email: event.target.value});
+function Register({loadUser, onRouteChange}) {
+
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [name, setName] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const onEmailChange = (event) => {
+        setEmail(event.target.value);
     }
 
-    onPasswordChange = (event) => {
-        this.setState({password: event.target.value});
+    const onPasswordChange = (event) => {
+        setPassword(event.target.value);
     }
 
-    onNameChange = (event) => {
-        this.setState({name: event.target.value});
+    const onNameChange = (event) => {
+        setName(event.target.value);
     }
 
-    validateEmail = (email) => {
+    const validateEmail = (email) => {
         // A simple email validation regex
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return emailRegex.test(email);
     }
 
-    validatePassword = (password) => {
+    const validatePassword = (password) => {
 
         const MIN_LENGTH = 8;
         const hasUpperCase = /[A-Z]/.test(password);
         const hasLowerCase = /[a-z]/.test(password);
         const hasNumber = /\d/.test(password);
-        const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
+        // const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
 
         if(password.length < MIN_LENGTH) {
             console.log("Length not OK")
@@ -63,49 +60,49 @@ class Register extends React.Component {
         return true;
     };
 
-    validateRegisterInput = () => {     
+    const validateRegisterInput = () => {     
         // Validate email
-        if (!this.validateEmail(this.state.email)) {
+        if (!validateEmail(email)) {
             toast.error("Invalid email address");
             return false;
         }
 
         // Validate name (assuming at least 2 characters)
-        if (this.state.name.length < 2) {
+        if (name.length < 2) {
             toast.error("Name should be at least 2 characters long");
             return false;
         }
 
         // Validate password (assuming at least 6 characters)
-        if (!this.validatePassword(this.state.password)) {
+        if (!validatePassword(password)) {
             return false;
         }
 
         return true;
     }
 
-    onRegister = () => {
+    const onRegister = () => {
 
-        // if(!this.validateRegisterInput()) {
+        //Comment out for testing
+        // if(!validateRegisterInput()) {
         //     return;
         // }
 
-        this.setState({ isLoading: true });
+        setIsLoading(true);
         fetch('http://localhost:5000/register', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password,
-                name: this.state.name
+                email: email,
+                password: password,
+                name: name
             })
         })
         .then(res => res.json())
         .then(data => {
-            this.setState({ isLoading: false });
-            console.log("data",data)
+            setIsLoading(false);
             
            if(!data.success) {
                 let msg = data.message || "Error while trying to register, please try again";
@@ -113,78 +110,73 @@ class Register extends React.Component {
                 return; 
             }
 
-            this.props.loadUser(data.user);
+            loadUser(data.user);
 
-            this.props.onRouteChange('home');
+            onRouteChange('home');
         })
         .catch(error=>{
-            this.setState({ isLoading: false });
+            setIsLoading(false);
             toast.error(error?.message || "Server is unable to connect");
             return;
         });
     }
 
-    render() {
-
-        const { isLoading } = this.state;
-
-        return(
-            <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-                <main className="pa4 black-80">
-                    <div className="measure">
-                        <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-                            <legend className="f2 fw6 ph0 mh0">Register</legend>
-                            <div className="mt3">
-                                <label className="db fw6 lh-copy f4" htmlFor="name">Name</label>
-                                <input 
-                                    className="pa2 input-reset ba bg-transparent hover-white w-100" 
-                                    type="text" 
-                                    name="name"  
-                                    id="name"
-                                    onChange={this.onNameChange}
-                                />
-                            </div>
-                            <div className="mt3">
-                                <label className="db fw6 lh-copy f4" htmlFor="email-address">Email</label>
-                                <input 
-                                    className="pa2 input-reset ba bg-transparent hover-white w-100" 
-                                    type="email" 
-                                    name="email-address"  
-                                    id="email-address"
-                                    onChange={this.onEmailChange}
-                                />
-                            </div>
-                            <div className="mv3">
-                                <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
-                                <input 
-                                    className="b pa2 input-reset ba bg-transparent hover-white w-100" 
-                                    type="password" 
-                                    name="password"  
-                                    id="password"
-                                    onChange={this.onPasswordChange}
-                                />
-                            </div>
-                        </fieldset>
-                        <div className="">
-                            <button
-                                onClick={this.onRegister}
-                                className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f4 dib button-120"
-                                type="submit"
-                                disabled={isLoading}
-                            >
-                                {isLoading ? (
-                                    <span className="spinner-border spinner-border-sm pl-5 pr-5" role="status" aria-hidden="true"></span>
-                                ) : (
-                                    "Register"
-                                )}
-                            </button>
+    return(
+        <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
+            <main className="pa4 black-80">
+                <div className="measure">
+                    <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
+                        <legend className="f2 fw6 ph0 mh0">Register</legend>
+                        <div className="mt3">
+                            <label className="db fw6 lh-copy f4" htmlFor="name">Name</label>
+                            <input 
+                                className="pa2 input-reset ba bg-transparent hover-white w-100" 
+                                type="text" 
+                                name="name"  
+                                id="name"
+                                onChange={onNameChange}
+                            />
                         </div>
+                        <div className="mt3">
+                            <label className="db fw6 lh-copy f4" htmlFor="email-address">Email</label>
+                            <input 
+                                className="pa2 input-reset ba bg-transparent hover-white w-100" 
+                                type="email" 
+                                name="email-address"  
+                                id="email-address"
+                                onChange={onEmailChange}
+                            />
+                        </div>
+                        <div className="mv3">
+                            <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
+                            <input 
+                                className="b pa2 input-reset ba bg-transparent hover-white w-100" 
+                                type="password" 
+                                name="password"  
+                                id="password"
+                                onChange={onPasswordChange}
+                            />
+                        </div>
+                    </fieldset>
+                    <div className="">
+                        <button
+                            onClick={onRegister}
+                            className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f4 dib button-120"
+                            type="submit"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? (
+                                <span className="spinner-border spinner-border-sm pl-5 pr-5" role="status" aria-hidden="true"></span>
+                            ) : (
+                                "Register"
+                            )}
+                        </button>
                     </div>
-                </main>
-            </article>
-    
-        )
-    }
+                </div>
+            </main>
+        </article>
+
+    )
 }
 
 export default Register
