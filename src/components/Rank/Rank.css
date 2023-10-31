@@ -1,0 +1,44 @@
+@keyframes slide {
+    from {
+        transform: translateX(-300px);
+    }
+
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+        transform: scaleZ(1);
+    }
+
+    to {
+        transform: rotate(360deg);
+        transform: scaleZ(100);
+    }
+}
+
+.slide {
+    animation: slide 2s ease-in 1s 1 normal forwards;
+
+    transform: translateX(-300px);
+}
+
+.rotate {
+    animation: rotate 2s ease-in 1s 1 normal forwards;
+}
+
+.hoverOver {
+    z-index: 1;
+    color:red;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

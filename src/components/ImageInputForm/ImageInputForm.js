@@ -1,7 +1,7 @@
 import React from 'react';
 import './ImageInputForm.css';
 
-const ImageInputForm = ({loading, onURLchange, onFileChange, onLinkSubmtion, onFileUpload }) => {
+const ImageInputForm = ({loading, imageUrl, onURLchange, onFileChange, onLinkSubmition, onFileUpload }) => {
 
     return (
         <div className='form-group'>
@@ -11,9 +11,9 @@ const ImageInputForm = ({loading, onURLchange, onFileChange, onLinkSubmtion, onF
                     <span className='text-warning font-weight-bold' style={{ fontSize: '40px' }}>{'1'}</span>
                     {' point per face recognized'}
                 </p>
-                <input className='form-control w-50 center' type='text' style={{ WebkitBorderRadius: '5px' }} onChange={onURLchange} />
+                <input className='form-control w-50 center' type='text' style={{ WebkitBorderRadius: '5px' }} value={imageUrl} onChange={onURLchange} />
                 <button
-                    onClick={onLinkSubmtion}
+                    onClick={onLinkSubmition}
                     className={`m-2 grow f4 link ph3 pv2 dib white bg-light-purple button-150 ${loading ? 'disabled' : ''}`}
                     style={{ WebkitBorderRadius: '5px' }}
                 >

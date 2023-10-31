@@ -1,4 +1,4 @@
-import React , { useEffect, useState, useRef} from 'react'
+import React , { useEffect, useState, createContext, useRef} from 'react'
 import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/navigation.js'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition.js'
@@ -130,16 +130,17 @@ const setupClarifaiAPI_PREDICT_VIA_FILE = (image_bytes_string) => {
     return requestOptions;
 }
 
+export const PointsEarnedContext = createContext();
+
 function App() {
 
     //PREDICT VIA URL METHOD
-    const [inputURL,setinputURL]=useState("");
     const [imageUrl,setImageUrl]=useState("");
 
     //PREDICT VIA FILE METHOD
-    const [inputFile,setInputFile]=useState("")
-    const [imageFile,setImageFile]=useState("");
-    const [base64String, setBase64String] = useState('');
+    const [filepath, setFilepath] = useState('');
+
+    const [imageSrc, setImageSrc] = useState('');
 
     const [error,setError]=useState(null);
     const [boxes,setBoxes]=useState([]);
@@ -156,6 +157,9 @@ function App() {
     });
     const [loading, setLoading] = useState(false);
 
+
+    const [pointsEarned, setPointsEarned] = useState(0);
+
     const ref = useRef(null);
 
     useEffect(() => {
@@ -163,6 +167,10 @@ function App() {
         //   console.log(`Server respond with status ${response.status}`);
         // });
     });
+
+    const updatePointsEarned = (newValue) => {
+        setPointsEarned(newValue);
+    };
 
     const scrollToImage = () => {
         if(ref?.current) {
@@ -183,13 +191,8 @@ function App() {
     }
 
     const calculateFaceLocation = (data, uploadViaFile = false) => {
-        console.log("uploadViaFile", uploadViaFile)
-        console.log("data", data)
 
         const facesArray = data.outputs[0]?.data?.regions;
-
-
-        console.log("facesArray",facesArray)
 
         const numberOfFaces = data.outputs[0]?.data?.regions?.length || 0;
 
@@ -200,9 +203,7 @@ function App() {
         
         return facesArray.map((face, index) => {
             const clarifaiFace=face.region_info.bounding_box;
-            console.log(index,clarifaiFace)
-            const image= uploadViaFile ? document.getElementById('inputImage2')  : document.getElementById('inputImage')
-            console.log("image", image)
+            const image= document.getElementById('inputImage')
             const width=Number(image.width)
             const height=Number(image.height)
             return {
@@ -221,69 +222,60 @@ function App() {
 
     const onURLchange = event => {
         console.log("onURLChange", event.target.value)
-        setinputURL(event.target.value)
+        setImageUrl(event.target.value)
     };
 
     const onFileChange = event => {
         console.log("onFileChange", event.target.files)
-        const file = event.target.files[0]
+        const filepath = event.target.files[0]
 
 
-        if (file) {
-            convertFileToBase64(file);
-
-            console.log("base64String", base64String)
-            
-            setInputFile(base64String)
+        if (filepath) {
+            setFilepath(filepath);
         }
-        
     }
 
-    const convertFileToBase64 = (file) => {
-
-        console.log("convertFileToBase64", file)
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-    
-        reader.onload = () => {
-            console.log("Reader result", reader.result)
-            setBase64String(reader.result);
-        };
-    
-        reader.onerror = (error) => {
-          console.error('Error converting file to Base64:', error);
-        };
+    const convertFileToBase64 = (filepath) => {
+        return new Promise((resolve, reject) => {
+            console.log("convertFileToBase64", filepath)
+            const reader = new FileReader();
+            reader.readAsDataURL(filepath);
+        
+            reader.onload = () => {
+                console.log("Reader result", reader.result);
+                resolve(reader.result)
+            };
+        
+            reader.onerror = (error) => {
+              console.error('Error converting file to Base64:', error);
+              reject(error)
+            };
+        });
     };
 
-    const onLinkSubmtion=(event)=>{
+    const onLinkSubmition=(event)=>{
 
+        console.log(event)
         cleanState("file")
 
-        if(!inputURL) {
+        if(!imageUrl) {
             toast.warning("Please provide a url of an image");
             return;
         }
 
-        
-        setImageUrl(inputURL)
+        setImageSrc(imageUrl)
 
-        console.log("onLinkSubmtion")
-        console.log("inputURL",inputURL)
-        console.log("userId", user.id)
-
-        // app.models.predict(Clarifai.FACE_DETECT_MODEL,inputURL)
-        // app.models.predict('face-detection', inputURL)
+        // app.models.predict(Clarifai.FACE_DETECT_MODEL,imageUrl)
+        // app.models.predict('face-detection', imageUrl)
         setLoading(true);
-        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiAPI_PREDICT_VIA_URL(inputURL))
+        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiAPI_PREDICT_VIA_URL(imageUrl))
             .then(response => response.json())
             .then(response=>{
                 setLoading(false);
-                console.log("response",response)
-                console.log("userId", user.id)
                 
                 //Score how many faces you found
                 const facesRecognized = response?.outputs[0]?.data?.regions?.length || 0;
-                console.log("facesRecognized", facesRecognized)
+
                 if(response.status.code!== 10000) {
 
                     if(response.outputs) {
@@ -316,6 +308,8 @@ function App() {
 
                         toast.success(`Success, you claimed ${facesRecognized} points !`);
 
+                        setPointsEarned(facesRecognized);
+
                         setUser({
                             ...user,
                             score: res.score,
@@ -339,36 +333,24 @@ function App() {
             })
     }
 
-     const onFileUpload=(event)=>{
+    const onFileUpload = async (event) => {
 
         cleanState("url")
 
-        console.log("File Upload")
-        console.log(event.target)
-
-        if(!base64String) {
+        if(!filepath) {
             toast.warning("Please upload an image");
             return;
         }
 
+        const base64String = await convertFileToBase64(filepath)
+        setImageSrc(base64String)
         const base64Content = base64String.split(',')[1]; // Remove the data URI prefix
-        // const base64Content = base64String
-        setImageFile(base64Content)
 
-        console.log("base64String", base64String)
-        console.log("base64Content",base64Content)
-        console.log("imageFile  ", imageFile)
-
-        // app.models.predict(Clarifai.FACE_DETECT_MODEL,inputURL)
-        // app.models.predict('face-detection', inputURL)
         setLoading(true);
-        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiAPI_PREDICT_VIA_FILE(imageFile))
+        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiAPI_PREDICT_VIA_FILE(base64Content))
             .then(response => response.json())
             .then(response=>{
                 setLoading(false);
-
-                console.log("response",response)
-                console.log("userId", user.id)
 
                 if(response.status.code!== 10000) {
 
@@ -385,7 +367,6 @@ function App() {
 
                 //Score how many faces you found
                 const facesRecognized = response?.outputs[0]?.data?.regions?.length || 0;
-                console.log("facesRecognized", facesRecognized)
              
                 if(response.status.code === 10000) {
 
@@ -406,6 +387,8 @@ function App() {
                         }
 
                         toast.success(`Success, you claimed ${facesRecognized * 2} points !`);
+
+                        setPointsEarned(facesRecognized*2);
 
                         setUser({
                             ...user,
@@ -433,24 +416,18 @@ function App() {
     const cleanState = (mode) => {
 
         if(mode === 'all') {
-            setinputURL('')
             setImageUrl('')
-            setInputFile("")
-            setImageFile("");
-            setBase64String('');
             setBoxes([])
             return;
         }
 
         if(mode === "file") {
-            setImageFile("")
-            setBase64String("")
+            setFilepath('')
             setBoxes([]);
             return;
         }
 
         if(mode === "url") {
-            setinputURL('')
             setImageUrl('')
             return;
         }
@@ -485,17 +462,18 @@ function App() {
             {route==='home' ? 
                 <div>
                     <Logo />
-                    <Rank user={user}/>
+                    <PointsEarnedContext.Provider value={{ pointsEarned, updatePointsEarned }}>
+                        <Rank user={user}/>
+                    </PointsEarnedContext.Provider>
                     <ImageInputForm 
                         loading={loading} 
+                        imageUrl={imageUrl}
                         onURLchange={onURLchange} 
-                        onFileChange={onFileChange} 
-                        // urlValue={inputURL}
-                        fileValue={inputFile}
-                        onLinkSubmtion={onLinkSubmtion} 
+                        onLinkSubmition={onLinkSubmition} 
+                        onFileChange={onFileChange}
                         onFileUpload={onFileUpload}/>
                         <div ref={ref} className='mb-5'>
-                            <FaceRecognition imageUrl={imageUrl} base64String={base64String} boxes={boxes} />
+                            <FaceRecognition imageSrc={imageSrc} boxes={boxes} />
                         </div>             
                     </div>
             : (route === 'signin') ? 
