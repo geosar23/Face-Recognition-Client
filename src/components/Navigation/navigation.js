@@ -60,9 +60,17 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
                 <DeleteAccountModal show={showDeleteModal} onHide={closeDeleteModal} user={user} onDelete={onDelete}/>
                 <AdminPanelModal show={showAdminPanelModal} onHide={closeAdminPanelModal} user={user}/>
                 <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                        <p onClick={openConfirmationForDeleteAccountModal} className='btn btn-danger' style={{ margin: '0 10px' }}>Delete account</p>
-                        <p onClick={openAdminPanelModal} className='btn btn-primary' style={{ margin: '0 10px' }}>Admin panel</p>
+                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    {user.name !== 'admin' && (
+                        <button onClick={openConfirmationForDeleteAccountModal} className='btn btn-danger' style={{ margin: '0 10px' }}>
+                            Delete account
+                        </button>
+                    )}
+                    {user.name === 'admin' && (
+                        <button onClick={openAdminPanelModal} className='btn btn-primary' style={{ margin: '0 10px' }}>
+                            Admin panel
+                        </button>
+                    )}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                         <p onClick={() => onRouteChange('signout')} className='f3 link dim black underline pa3 pointer'>Sign Out</p>
