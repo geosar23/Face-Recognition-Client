@@ -1,5 +1,4 @@
 import React from 'react'
-import ParticlesBg from 'particles-bg'
 import './Particle.css'
 
 const Particle = () =>{
