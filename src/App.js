@@ -138,8 +138,9 @@ function App() {
     const [imageUrl,setImageUrl]=useState("");
 
     //PREDICT VIA FILE METHOD
-    const [filepath, setFilepath] = useState('');
+    const [filepath, setFilepath] = useState(null);
 
+    //IMG SRC TO PROVIDE
     const [imageSrc, setImageSrc] = useState('');
 
     const [error,setError]=useState(null);
@@ -228,7 +229,6 @@ function App() {
     const onFileChange = event => {
         console.log("onFileChange", event.target.files)
         const filepath = event.target.files[0]
-
 
         if (filepath) {
             setFilepath(filepath);
@@ -339,6 +339,7 @@ function App() {
 
         if(!filepath) {
             toast.warning("Please upload an image");
+            cleanState("url")
             return;
         }
 
@@ -416,24 +417,32 @@ function App() {
     const cleanState = (mode) => {
 
         if(mode === 'all') {
-            setImageUrl('')
-            setBoxes([])
+            setImageUrl('');
+            setFilepath(null);
+            setBoxes([]);
+            if(document.getElementById('formFile')?.value) {
+                document.getElementById('formFile').value = "";
+            }
             return;
         }
 
         if(mode === "file") {
-            setFilepath('')
+            setFilepath(null);
             setBoxes([]);
+            if(document.getElementById('formFile')?.value) {
+                document.getElementById('formFile').value = "";
+            }
             return;
         }
 
         if(mode === "url") {
             setImageUrl('')
+            setBoxes([]);
             return;
         }
 
         if(mode === "boxes") {
-            setBoxes([])
+            setBoxes([]);
             return;
         }
     }
