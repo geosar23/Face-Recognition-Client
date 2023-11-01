@@ -10,6 +10,7 @@ const Rank = ({ user }) => {
 
     useEffect(() => {
         if (pointsEarned !== 0) {
+            setShowAnimation(true);
             setAnimate(true);
 
             const timer = setTimeout(() => {
@@ -21,13 +22,6 @@ const Rank = ({ user }) => {
         }
     }, [pointsEarned]);
 
-    useEffect(() => {
-        // Show the animation when pointsEarned is not 0
-        if (pointsEarned !== 0) {
-            setShowAnimation(true);
-        }
-    }, [pointsEarned]);
-
     return (
         <div className='ma4 mt0'>
             <div className='white f3'>
@@ -36,7 +30,7 @@ const Rank = ({ user }) => {
             <div className='rank white f1'>
                 {`Your rank is #${user.score}`}
                 {showAnimation && animate && (
-                    <h1 className={`rotate-and-scale hoverOver`}>+{pointsEarned}</h1>
+                    <h1 className={`rotate-and-scale hoverOver press-start-2p`}><span className='changeColor press-start-2p'>+{pointsEarned}</span></h1>
                 )}
             </div>
         </div>
