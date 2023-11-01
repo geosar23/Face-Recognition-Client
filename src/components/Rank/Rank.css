@@ -2,37 +2,27 @@
     from {
         transform: translateX(-300px);
     }
-
     to {
         transform: translateX(0);
     }
 }
 
-@keyframes rotate {
+@keyframes rotateAndScale {
     from {
-        transform: rotate(0);
-        transform: scaleZ(1);
+        transform: rotate(0deg) scale(0.01);
     }
-
     to {
-        transform: rotate(360deg);
-        transform: scaleZ(100);
+        transform: rotate(1800deg) scale(5);
     }
 }
 
-.slide {
-    animation: slide 2s ease-in 1s 1 normal forwards;
-
-    transform: translateX(-300px);
-}
-
-.rotate {
-    animation: rotate 2s ease-in 1s 1 normal forwards;
+.rotate-and-scale {
+    animation: rotateAndScale 2s cubic-bezier(0.32, 1, 0.68, 1) infinite;
 }
 
 .hoverOver {
     z-index: 1;
-    color:red;
+    color: red;
     position: fixed;
     top: 0;
     left: 0;
