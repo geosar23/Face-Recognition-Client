@@ -1,4 +1,4 @@
-import React , { useEffect, useState, createContext, useRef} from 'react'
+import React , { useEffect, useState, useRef} from 'react'
 import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/navigation.js'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition.js'
@@ -130,8 +130,6 @@ const setupClarifaiAPI_PREDICT_VIA_FILE = (image_bytes_string) => {
     return requestOptions;
 }
 
-export const PointsEarnedContext = createContext();
-
 function App() {
 
     //PREDICT VIA URL METHOD
@@ -168,10 +166,6 @@ function App() {
         //   console.log(`Server respond with status ${response.status}`);
         // });
     });
-
-    const updatePointsEarned = (newValue) => {
-        setPointsEarned(newValue);
-    };
 
     const scrollToImage = () => {
         if(ref?.current) {
@@ -471,9 +465,7 @@ function App() {
             {route==='home' ? 
                 <div>
                     <Logo />
-                    <PointsEarnedContext.Provider value={{ pointsEarned, updatePointsEarned }}>
-                        <Rank user={user}/>
-                    </PointsEarnedContext.Provider>
+                    <Rank user={user} pointsEarned={pointsEarned}/>
                     <ImageInputForm 
                         loading={loading} 
                         imageUrl={imageUrl}
