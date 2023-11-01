@@ -14,8 +14,9 @@ const ImageInputForm = ({loading, imageUrl, onURLchange, onFileChange, onLinkSub
                 <input className='form-control w-50 center' type='text' id="formUrl" style={{ WebkitBorderRadius: '5px' }} value={imageUrl} onChange={onURLchange} />
                 <button
                     onClick={onLinkSubmition}
-                    className={`m-2 grow f4 link ph3 pv2 dib white bg-light-purple button-150 ${loading ? 'disabled' : ''}`}
+                    className={`m-2 grow f4 link ph3 pv2 dib white bg-light-purple button-150`}
                     style={{ WebkitBorderRadius: '5px' }}
+                    disabled={loading}
                 >
                     {loading && imageUrl ? (
                         <span className="mt-2 mb-3 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
@@ -34,8 +35,9 @@ const ImageInputForm = ({loading, imageUrl, onURLchange, onFileChange, onLinkSub
                 </div>
                 <button
                     onClick={onFileUpload}
-                    className={`m-2 grow f4 link ph3 pv2 dib white bg-light-purple button-150 ${loading ? 'disabled' : ''}`}
+                    className={`m-2 grow f4 link ph3 pv2 dib white bg-light-purple button-150`}
                     style={{ WebkitBorderRadius: '5px' }}
+                    disabled={loading}
                 >
                     {loading && !imageUrl? (
                         <span className="mt-2 mb-3 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
