@@ -1,5 +1,4 @@
 import React , {useState} from 'react'
-import { toast } from 'react-toastify';
 import DeleteAccountModal from '../../Modals/DeleteAccountModal/DeleteAccountModal';
 import AdminPanelModal from '../../Modals/AdminPanelModal/AdminPanelModal';
 import './navigation.css'
@@ -26,32 +25,11 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
     }
 
     
-    const onDelete = () => {
-
-        //ensure delete is working
-        fetch(`http://localhost:5000/user/${user.id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            closeDeleteModal();
-            if(!data.success) {
-                let msg = data.message || "Account didnt deleted";
-                toast.error(msg)
-                return; 
-            }
-            
-            toast.success("Account deleted succesfully");
+    const onDelete = (event) => {
+        closeDeleteModal();
+        if(event) {
             onRouteChange('signout');
-        })
-        .catch(error => {
-            closeDeleteModal();
-            toast.error(error?.message || "Server is unable to connect");
-            return;
-        });
+        }
     };
 
     if (signIn) {
