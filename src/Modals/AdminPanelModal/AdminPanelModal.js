@@ -12,14 +12,18 @@ function AdminPanelModal({ show, onHide }) {
   const [selectedUser, setSelectedUser] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/users')
+    getUserData();
+  }, []);
+
+    const getUserData = () => {
+      fetch('http://localhost:5000/users')
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
         setUserData(data)
       })
       .catch((error) => console.error('Error fetching user data:', error));
-  }, [userData]);
+    }
 
 
     const openConfirmationForDeleteAccountModal = (data) => {
@@ -34,6 +38,7 @@ function AdminPanelModal({ show, onHide }) {
 
     const onDelete = () => {
         closeDeleteModal();
+        getUserData();
     }
 
   return (
