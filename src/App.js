@@ -1,5 +1,4 @@
 import React , { useEffect, useState, useRef} from 'react'
-import Clarifai from 'clarifai';
 import Navigation from './components/Navigation/navigation.js'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition.js'
 import Logo from './components/Logo/logo.js'
@@ -12,128 +11,12 @@ import Register from './components/Register/Register'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
-const app = new Clarifai.App({
-    // apiKey: '9c7d04bafee74c2e852554c07749af15'
-    apiKey: '46ef13ce5b9142009d1a09e67843bc1b'
-    // apiKey: '0dcc5597fb924e6c9d77683241494f63'
-});
-
-const setupClarifaiAPI_PREDICT_VIA_URL = (imageUrl) => {
-
-    // https://docs.clarifai.com/api-guide/predict/images
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    // In this section, we set the user authentication, user and app ID, model details, and the URL
-    // of the image we want as an input. Change these strings to run your own example.
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Your PAT (Personal Access Token) can be found in the portal under Authentification
-    const PAT = '0dcc5597fb924e6c9d77683241494f63';
-    // Specify the correct user_id/app_id pairings
-    // Since you're making inferences outside your app's scope
-    const USER_ID = 'george_sarama';       
-    const APP_ID = '46ef13ce5b9142009d1a09e67843bc1b';
-    // Change these to whatever model and image URL you want to use
-    const MODEL_ID = 'face-detection';
-    // const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';   
-    // const IMAGE_URL = 'https://samples.clarifai.com/metro-north.jpg';
-    const IMAGE_URL = imageUrl;
-
-    // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
-    // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
-    // this will default to the latest version_id
-    // fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
-
-    const raw = JSON.stringify({
-        "user_app_id": {
-            "user_id": USER_ID,
-            "app_id": APP_ID
-        },
-        "inputs": [
-            {
-                "data": {
-                    "image": {
-                        "url": IMAGE_URL
-                    }
-                }
-            }
-        ]
-    });
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Key ' + PAT
-        },
-        body: raw
-    };
-
-    return requestOptions;
-
-}
-
-const setupClarifaiAPI_PREDICT_VIA_FILE = (image_bytes_string) => {
-    // https://docs.clarifai.com/api-guide/predict/images
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    // In this section, we set the user authentication, user and app ID, model details, and the URL
-    // of the image we want as an input. Change these strings to run your own example.
-    //////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // Your PAT (Personal Access Token) can be found in the portal under Authentification
-    const PAT = '0dcc5597fb924e6c9d77683241494f63';
-    // Specify the correct user_id/app_id pairings
-    // Since you're making inferences outside your app's scope
-    const USER_ID = 'george_sarama';       
-    const APP_ID = '46ef13ce5b9142009d1a09e67843bc1b';
-    // Change these to whatever model and image URL you want to use
-    const MODEL_ID = 'face-detection';
-    // const MODEL_VERSION_ID = '6dc7e46bc9124c5c8824be4822abe105';
-    const IMAGE_BYTES_STRING = image_bytes_string;
-
-    console.log("image_bytes_string",image_bytes_string)
-
-    // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
-    // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
-    // this will default to the latest version_id
-    // fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/versions/" + MODEL_VERSION_ID + "/outputs", requestOptions)
-
-    ///////////////////////////////////////////////////////////////////////////////////
-    // YOU DO NOT NEED TO CHANGE ANYTHING BELOW THIS LINE TO RUN THIS EXAMPLE
-    ///////////////////////////////////////////////////////////////////////////////////
-
-    const raw = JSON.stringify({
-        "user_app_id": {
-            "user_id": USER_ID,
-            "app_id": APP_ID
-        },
-        "inputs": [
-            {
-                "data": {
-                    "image": {
-                        "base64": IMAGE_BYTES_STRING
-                    }
-                }
-            }
-        ]
-    });
-
-    const requestOptions = {
-        method: 'POST',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': 'Key ' + PAT
-        },
-        body: raw
-    };
-
-    return requestOptions;
-}
+import { getServerKeys ,setupClarifaiAPI_PREDICT_VIA_FILE, setupClarifaiAPI_PREDICT_VIA_URL} from './helpers/clarifai.js';
 
 function App() {
 
     //PREDICT VIA URL METHOD
-    const [imageUrl,setImageUrl]=useState("");
+    const [imageUrl,setImageUrl] = useState("");
 
     //PREDICT VIA FILE METHOD
     const [filepath, setFilepath] = useState(null);
@@ -162,10 +45,8 @@ function App() {
     const ref = useRef(null);
 
     useEffect(() => {
-        // fetch('http://localhost:5000').then(response => {
-        //   console.log(`Server respond with status ${response.status}`);
-        // });
-    });
+        getServerKeys();
+    },[]);
 
     const scrollToImage = () => {
         if(ref?.current) {
@@ -185,7 +66,7 @@ function App() {
         });
     }
 
-    const calculateFaceLocation = (data, uploadViaFile = false) => {
+    const calculateFaceLocation = (data) => {
 
         const facesArray = data.outputs[0]?.data?.regions;
 
