@@ -20,7 +20,7 @@ const Rank = ({ user, pointsEarned }) => {
     return (
         <div className='ma4 mt0'>
             <div className='white f3'>
-                {`Hello ${user.name}, you have logged in ${user.entries} times, you joined since ${moment(user.joined).calendar()}`}
+                {`Hello ${user.name}, you have logged in ${user.entries} times, you joined since ${moment(user.joined).format('MMMM Do YYYY')}`}
             </div>
             <div className='rank white f1'>
                 {`Your rank is #${user.score}`}
