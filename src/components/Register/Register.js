@@ -130,6 +130,7 @@ function Register({loadUser, onRouteChange}) {
                         <div className="mt3">
                             <label className="db fw6 lh-copy f4" htmlFor="name">Name</label>
                             <input 
+                                aria-label="name input"
                                 className="pa2 input-reset ba bg-transparent hover-white w-100" 
                                 type="text" 
                                 name="name"  
@@ -140,6 +141,7 @@ function Register({loadUser, onRouteChange}) {
                         <div className="mt3">
                             <label className="db fw6 lh-copy f4" htmlFor="email-address">Email</label>
                             <input 
+                                aria-label="email input"
                                 className="pa2 input-reset ba bg-transparent hover-white w-100" 
                                 type="email" 
                                 name="email-address"  
@@ -150,6 +152,7 @@ function Register({loadUser, onRouteChange}) {
                         <div className="mv3">
                             <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
                             <input 
+                                aria-label="password input"
                                 className="b pa2 input-reset ba bg-transparent hover-white w-100" 
                                 type="password" 
                                 name="password"  

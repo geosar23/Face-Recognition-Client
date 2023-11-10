@@ -59,6 +59,7 @@ function SignIn({onRouteChange, loadUser}) {
                         <div className="mt3">
                             <label className="db fw6 lh-copy f4" htmlFor="email-address">Email</label>
                             <input 
+                                aria-label='email input'
                                 onChange={onEmailChange}
                                 className="pa2 input-reset ba bg-transparent hover-white w-100" 
                                 type="email" 
@@ -69,6 +70,7 @@ function SignIn({onRouteChange, loadUser}) {
                         <div className="mv3">
                             <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
                             <input
+                                aria-label="password input"
                                 onChange={onPasswordChange}
                                 className="b pa2 input-reset ba bg-transparent hover-white w-100" 
                                 type="password" 

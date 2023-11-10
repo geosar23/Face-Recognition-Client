@@ -13,7 +13,7 @@ const FaceRecognition = ({imageSrc, boxes})=>{
                             id='inputImage'
                             alt=''
                             src={imageSrc}
-                            width='500px'
+                            width='500'
                             height='auto'
                         />
                     ) : null
