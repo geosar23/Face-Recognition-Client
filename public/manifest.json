@@ -1,19 +1,19 @@
 {
   "short_name": "Face Recognition",
-  "name": "Face Recognition by Saros",
+  "name": "Face Recognition by George Saramantis",
   "icons": [
     {
-      "src": "logo1.ico",
+      "src": "brain.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo1.png",
+      "src": "brain.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo1.png",
+      "src": "brain.png",
       "type": "image/png",
       "sizes": "512x512"
     }
