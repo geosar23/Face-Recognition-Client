@@ -34,20 +34,24 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
 
     if (signIn) {
         return (
-            <div>
-                <DeleteAccountModal show={showDeleteModal} onHide={closeDeleteModal} user={user} onDelete={onDelete}/>
-                <AdminPanelModal show={showAdminPanelModal} onHide={closeAdminPanelModal} user={user}/>
+            <div>               
                 <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '70px' }}>
                 <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                     {user.name !== 'admin' && (
-                        <button onClick={openConfirmationForDeleteAccountModal} className='btn btn-danger' style={{ margin: '0 10px' }}>
-                            Delete account
-                        </button>
+                        <div>
+                            <DeleteAccountModal show={showDeleteModal} onHide={closeDeleteModal} user={user} onDelete={onDelete}/>
+                            <button onClick={openConfirmationForDeleteAccountModal} className='btn btn-danger' style={{ margin: '0 10px' }}>
+                                Delete account
+                            </button>
+                        </div>
                     )}
                     {user.name === 'admin' && (
-                        <button onClick={openAdminPanelModal} className='btn btn-primary' style={{ margin: '0 10px' }}>
-                            Admin panel
-                        </button>
+                        <div>
+                            <AdminPanelModal show={showAdminPanelModal} onHide={closeAdminPanelModal} user={user}/>
+                            <button onClick={openAdminPanelModal} className='btn btn-primary' style={{ margin: '0 10px' }}>
+                                Admin panel
+                            </button>
+                        </div>
                     )}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
