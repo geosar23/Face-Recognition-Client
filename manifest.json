@@ -1,19 +1,34 @@
 {
   "short_name": "Face Recognition",
-  "name": "Face Recognition by Saros",
+  "name": "Face Recognition by George Saramantis",
   "icons": [
     {
-      "src": "logo1.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "src": "favicon.ico",
+      "sizes": "16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo1.png",
+      "src": "favicon-32x32.png",
+      "sizes": "32x32 24x24",
+      "type": "image/png"
+    },
+    {
+      "src": "brain_96x96.png",
+      "sizes": "96x96 64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "brain_120x120.png",
+      "type": "image/png",
+      "sizes": "120x120"
+    },
+    {
+      "src": "brain270x270.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo1.png",
+      "src": "brain270x270.png",
       "type": "image/png",
       "sizes": "512x512"
     }
