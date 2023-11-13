@@ -45,8 +45,29 @@ function App() {
     const ref = useRef(null);
 
     useEffect(() => {
+        checkForToken();
         getServerKeys();
     },[]);
+
+    const checkForToken = async () => {
+        const token = window.localStorage.getItem('token');
+        if(token) {
+            const response = await fetch('http://localhost:5000/signin', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+            });
+            const res = await response.json();
+
+            if(res.success) {
+                loadUser(res.user);
+                onRouteChange('home');
+            }
+          
+        }
+    };
 
     const scrollToImage = () => {
         if(ref?.current) {

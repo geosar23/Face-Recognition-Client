@@ -17,6 +17,10 @@ function SignIn({onRouteChange, loadUser}) {
         setSignInPassword(event.target.value);
     }
 
+    const saveAuthTokenInSession = (token) => {
+        window.localStorage.setItem('token', token);
+    }
+
     const onSubmitSignIn = () => {
 
         setLoading(true);
@@ -39,9 +43,10 @@ function SignIn({onRouteChange, loadUser}) {
                 toast.error(msg)
                 return; 
             }
-            
-          loadUser(data.user);
-          onRouteChange('home');
+
+            saveAuthTokenInSession(data.token);
+            loadUser(data.user);
+            onRouteChange('home');
         })
         .catch(error=>{
             setLoading(false);
