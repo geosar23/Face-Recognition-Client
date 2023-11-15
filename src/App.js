@@ -59,7 +59,7 @@ function App() {
     const checkForToken = async () => {
         const authorizationToken = window.localStorage.getItem('token');
         if(authorizationToken) {
-            const response = await fetch('http://localhost:5000/signin', {
+            const response = await fetch('/signin', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ function App() {
                 }
                 if(response.status.code === 10000) {
                     const authorizationToken = window.localStorage.getItem('token');
-                    fetch('http://localhost:5000/user/score', {
+                    fetch('/user/score', {
                         method: 'put',
                         headers: {'Content-Type': 'application/json','Authorization': authorizationToken},
                         body: JSON.stringify({
@@ -281,7 +281,7 @@ function App() {
              
                 if(response.status.code === 10000) {
                     const authorizationToken = window.localStorage.getItem('token');
-                    fetch('http://localhost:5000/user/score', {
+                    fetch('/user/score', {
                         method: 'put',
                         headers: {'Content-Type': 'application/json','Authorization': authorizationToken},
                         body: JSON.stringify({

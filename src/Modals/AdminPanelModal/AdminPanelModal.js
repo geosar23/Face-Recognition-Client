@@ -17,7 +17,7 @@ function AdminPanelModal({ show, onHide }) {
 
     const getUserData = () => {
         const authorizationToken = window.localStorage.getItem('token');
-        fetch('http://localhost:5000/users', {
+        fetch('/users', {
             headers: {
             'Content-Type': 'application/json',
             'Authorization': authorizationToken

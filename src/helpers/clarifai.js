@@ -13,7 +13,7 @@ export const getServerKeys = async () => {
             'Authorization': authorizationToken,
             'Content-Type': 'application/json',
         }
-        const response = await fetch('http://localhost:5000/serverKeys', {headers});
+        const response = await fetch('/serverKeys', {headers});
         const res = await response.json();
 
         CLARIFAI_PAT = res.data.CLARIFAI_PAT;

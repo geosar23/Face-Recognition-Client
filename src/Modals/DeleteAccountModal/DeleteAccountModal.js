@@ -10,7 +10,7 @@ function DeleteAccountModal({show, onHide, onDelete, user, adminAccess}) {
 
     const deleteUser = () => {
         const authorizationToken = window.localStorage.getItem('token');
-        fetch(`http://localhost:5000/user/${user.id}`, {
+        fetch(`/user/${user.id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
