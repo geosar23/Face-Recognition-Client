@@ -45,18 +45,21 @@ function App() {
     const ref = useRef(null);
 
     useEffect(() => {
-        checkForToken();
-        getServerKeys();
+        checkForToken().then((res) => {
+            if(res) {
+                getServerKeys();
+            }
+        })
     },[]);
 
     const checkForToken = async () => {
-        const token = window.localStorage.getItem('token');
-        if(token) {
+        const authorizationToken = window.localStorage.getItem('token');
+        if(authorizationToken) {
             const response = await fetch('http://localhost:5000/signin', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': token
+                    'Authorization': authorizationToken
                 },
             });
             const res = await response.json();
@@ -64,9 +67,16 @@ function App() {
             if(res.success) {
                 loadUser(res.user);
                 onRouteChange('home');
+                return true;
+            }else {
+                return false;
             }
           
         }
+    };
+
+    const handleLogout = () => {
+        window.localStorage.removeItem('token');
     };
 
     const scrollToImage = () => {
@@ -185,10 +195,10 @@ function App() {
                    
                 }
                 if(response.status.code === 10000) {
-
-                    fetch('http://localhost:5000/image', {
+                    const authorizationToken = window.localStorage.getItem('token');
+                    fetch('http://localhost:5000/user/score', {
                         method: 'put',
-                        headers: {'Content-Type': 'application/json'},
+                        headers: {'Content-Type': 'application/json','Authorization': authorizationToken},
                         body: JSON.stringify({
                             id: user.id,
                             score: facesRecognized
@@ -266,10 +276,10 @@ function App() {
                 const facesRecognized = response?.outputs[0]?.data?.regions?.length || 0;
              
                 if(response.status.code === 10000) {
-
-                    fetch('http://localhost:5000/image', {
+                    const authorizationToken = window.localStorage.getItem('token');
+                    fetch('http://localhost:5000/user/score', {
                         method: 'put',
-                        headers: {'Content-Type': 'application/json'},
+                        headers: {'Content-Type': 'application/json','Authorization': authorizationToken},
                         body: JSON.stringify({
                             id: user.id,
                             score: facesRecognized*2
@@ -344,10 +354,11 @@ function App() {
     }
 
     const onRouteChange = (route) => {
-        
+
         cleanState('all');
 
         if(route === 'signout'){
+            handleLogout();
             setSignIn(false);
         }else if(route === 'home'){
             setSignIn(true);

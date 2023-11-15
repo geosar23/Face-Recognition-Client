@@ -9,22 +9,22 @@ function DeleteAccountModal({show, onHide, onDelete, user, adminAccess}) {
     }
 
     const deleteUser = () => {
-        //ensure delete is working
+        const authorizationToken = window.localStorage.getItem('token');
         fetch(`http://localhost:5000/user/${user.id}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': authorizationToken
             }
         })
         .then(response => response.json())
         .then(data => {
-            onDelete(true);
             if(!data.success) {
-                let msg = data.message || "Account didnt deleted";
+                let msg = data.message || "Account cannot be deleted";
                 toast.error(msg)
                 return; 
             }
-            
+            onDelete(true);
             toast.success("Account deleted succesfully");
         })
         .catch(error => {
