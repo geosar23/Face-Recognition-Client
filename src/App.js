@@ -52,6 +52,10 @@ function App() {
         })
     },[]);
 
+    useEffect(() => {
+        cleanState('all')
+    }, [user.id])
+
     const checkForToken = async () => {
         const authorizationToken = window.localStorage.getItem('token');
         if(authorizationToken) {
@@ -323,7 +327,9 @@ function App() {
     const cleanState = (mode) => {
 
         if(mode === 'all') {
+            setPointsEarned(0)
             setImageUrl('');
+            setImageSrc('');
             setFilepath(null);
             setBoxes([]);
             if(document.getElementById('formFile')?.value) {

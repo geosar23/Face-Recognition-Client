@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './Register.css'
+import { getServerKeys } from '../../helpers/clarifai.js';
+import { saveAuthTokenInSession } from "../../helpers/auth.js";
 
 function Register({loadUser, onRouteChange}) {
 
@@ -83,10 +85,10 @@ function Register({loadUser, onRouteChange}) {
 
     const onRegister = () => {
 
-        //Comment out for testing
-        if(!validateRegisterInput()) {
-            return;
-        }
+        // //Comment out for testing
+        // if(!validateRegisterInput()) {
+        //     return;
+        // }
 
         setIsLoading(true);
         fetch('http://localhost:5000/register', {
@@ -101,7 +103,7 @@ function Register({loadUser, onRouteChange}) {
             })
         })
         .then(res => res.json())
-        .then(data => {
+        .then(async data => {
             setIsLoading(false);
             
            if(!data.success) {
@@ -109,9 +111,9 @@ function Register({loadUser, onRouteChange}) {
                 toast.error(msg)
                 return; 
             }
-
+            saveAuthTokenInSession(data.token);
             loadUser(data.user);
-
+            await getServerKeys();
             onRouteChange('home');
         })
         .catch(error=>{

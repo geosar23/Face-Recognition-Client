@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { getServerKeys } from '../../helpers/clarifai';
+import { saveAuthTokenInSession } from "../../helpers/auth";
 
 function SignIn({onRouteChange, loadUser}) {
 
@@ -17,10 +19,6 @@ function SignIn({onRouteChange, loadUser}) {
         setSignInPassword(event.target.value);
     }
 
-    const saveAuthTokenInSession = (token) => {
-        window.localStorage.setItem('token', token);
-    }
-
     const onSubmitSignIn = () => {
 
         setLoading(true);
@@ -35,7 +33,7 @@ function SignIn({onRouteChange, loadUser}) {
             })
         })
         .then(res => res.json())
-        .then(data => {
+        .then(async data => {
             setLoading(false);
 
             if(!data.success) {
@@ -43,9 +41,9 @@ function SignIn({onRouteChange, loadUser}) {
                 toast.error(msg)
                 return; 
             }
-
             saveAuthTokenInSession(data.token);
             loadUser(data.user);
+            await getServerKeys();
             onRouteChange('home');
         })
         .catch(error=>{
