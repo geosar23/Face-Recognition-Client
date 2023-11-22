@@ -1,22 +1,19 @@
-/* Add this CSS to your project's stylesheet */
 .dark-modal .modal-content {
-    background-color: #343a40; /* Dark background color */
-    color: #fff; /* Light text color */
+    background-color: #343a40;
+    color: #fff; 
   }
   
   .dark-modal .modal-header {
-    background-color: #212529; /* Dark header background color */
-    border-bottom: 1px solid #454d55; /* Dark header border color */
-    color: #fff; /* Light header text color */
+    background-color: #212529;
+    color: #fff;
   }
   
   .dark-modal .modal-body {
-    background-color: #343a40; /* Dark body background color */
-    color: #fff; /* Light body text color */
+    background-color: #343a40;
+    color: #fff;
   }
   
   .dark-modal .modal-footer {
-    background-color: #343a40; /* Dark footer background color */
-    border-top: 1px solid #454d55; /* Dark footer border color */
-    color: #fff; /* Light footer text color */
+    background-color: #343a40;
+    color: #fff;
   }
