@@ -85,10 +85,10 @@ function Register({loadUser, onRouteChange}) {
 
     const onRegister = () => {
 
-        // //Comment out for testing
-        // if(!validateRegisterInput()) {
-        //     return;
-        // }
+        //Comment out for testing
+        if(!validateRegisterInput()) {
+            return;
+        }
 
         setIsLoading(true);
         fetch('/register', {
