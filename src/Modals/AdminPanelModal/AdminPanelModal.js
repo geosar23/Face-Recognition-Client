@@ -4,11 +4,13 @@ import Modal from 'react-bootstrap/Modal';
 import moment from 'moment';
 import './AdminPanelModal.css'
 import DeleteAccountModal from '../DeleteAccountModal/DeleteAccountModal';
+import EditAccountModal from '../EditAccountModal/EditAccountModal';
 
 function AdminPanelModal({ show, onHide }) {
 
     const [userData, setUserData] = useState([]);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
 
     useEffect(() => {
@@ -25,25 +27,37 @@ function AdminPanelModal({ show, onHide }) {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log(data)
                 setUserData(data)
             })
             .catch((error) => console.error('Error fetching user data:', error));
     }
 
 
-    const openConfirmationForDeleteAccountModal = (data) => {
-        console.log(data)
-        setSelectedUser(data)
+    const openConfirmationForDeleteAccountModal = (user) => {
+        setSelectedUser(user)
         setShowDeleteModal(true)
+    }
+
+    const openEditUserModal = (user) => {
+        setSelectedUser(user)
+        setShowEditModal(true)
     }
 
     const closeDeleteModal = () => {
         setShowDeleteModal(false);
     }
 
+    const closeEditModal = () => {
+        setShowEditModal(false);
+    }
+
     const onDelete = () => {
         closeDeleteModal();
+        getUserData();
+    }
+
+    const onEdit = () => {
+        closeEditModal();
         getUserData();
     }
 
@@ -54,7 +68,8 @@ function AdminPanelModal({ show, onHide }) {
             </Modal.Header>
 
             <Modal.Body>
-                <DeleteAccountModal show={showDeleteModal} onHide={closeDeleteModal} user={selectedUser} adminAccess={true} onDelete={onDelete} />
+                {showDeleteModal ? <DeleteAccountModal show={showDeleteModal} onHide={closeDeleteModal} user={selectedUser} adminAccess={true} onDelete={onDelete} /> : ""}
+                {showEditModal ? <EditAccountModal show={showEditModal} onHide={closeEditModal} user={selectedUser} adminAccess={true} onEdit={onEdit} /> : ""}
                 <div className="sectionContainer">
                     <div className="flex">
                         <h4>Users Management</h4>
@@ -87,12 +102,12 @@ function AdminPanelModal({ show, onHide }) {
                                     <td>{moment(user.joined).format()}</td>
                                     <td>
                                         <div>
-                                            <button className="m-2 btn btn-sm btn-primary">Edit user</button>
-                                            <button className="m-2 btn btn-sm btn-warning">Reset password</button>
                                             {user.name !== 'admin' && (
-                                                <button className="m-2 btn btn-sm btn-danger" onClick={() => openConfirmationForDeleteAccountModal(user)}>
-                                                    Delete user
-                                                </button>
+                                                <div> 
+                                                    <button className="m-2 btn btn-sm btn-primary" onClick={() => openEditUserModal(user)}>Edit user</button>
+                                                    <button className="m-2 btn btn-sm btn-warning">Reset password</button>
+                                                    <button className="m-2 btn btn-sm btn-danger" onClick={() => openConfirmationForDeleteAccountModal(user)}>Delete user</button>
+                                                </div>
                                             )}
                                         </div>
                                     </td>

@@ -39,7 +39,6 @@ function Register({loadUser, onRouteChange}) {
         // const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
 
         if(password.length < MIN_LENGTH) {
-            console.log("Length not OK")
             toast.error("Password should be at least 8 characters long");
             return false;
         }

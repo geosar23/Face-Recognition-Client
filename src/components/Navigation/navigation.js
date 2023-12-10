@@ -47,7 +47,7 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
                     )}
                     {user.name === 'admin' && (
                         <div>
-                            <AdminPanelModal show={showAdminPanelModal} onHide={closeAdminPanelModal} user={user}/>
+                            {showAdminPanelModal ? <AdminPanelModal show={showAdminPanelModal} onHide={closeAdminPanelModal} user={user}/> : ""}
                             <button onClick={openAdminPanelModal} className='btn btn-primary' style={{ margin: '0 10px' }}>
                                 Admin panel
                             </button>

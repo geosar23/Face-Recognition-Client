@@ -127,17 +127,14 @@ function App() {
     }
 
     const displayFaceBox = (boxes) => {
-        console.log(boxes)
         setBoxes(boxes);
     }
 
     const onURLchange = event => {
-        console.log("onURLChange", event.target.value)
         setImageUrl(event.target.value)
     };
 
     const onFileChange = event => {
-        console.log("onFileChange", event.target.files)
         const filepath = event.target.files[0]
 
         if (filepath) {
@@ -147,12 +144,10 @@ function App() {
 
     const convertFileToBase64 = (filepath) => {
         return new Promise((resolve, reject) => {
-            console.log("convertFileToBase64", filepath)
             const reader = new FileReader();
             reader.readAsDataURL(filepath);
         
             reader.onload = () => {
-                console.log("Reader result", reader.result);
                 resolve(reader.result)
             };
         
@@ -164,8 +159,6 @@ function App() {
     };
 
     const onLinkSubmition=(event)=>{
-
-        console.log(event)
         cleanState("file")
 
         if(!imageUrl) {
@@ -211,7 +204,6 @@ function App() {
                     .then((res) => {
 
                         if(!res.success || !res.score) {
-                            console.log(res)
                             toast.error("Error: Server was not able to log your score please try again");
                             return;
                         }
@@ -236,8 +228,6 @@ function App() {
             .catch(error=>{
                 setLoading(false);
                 toast.error(error?.message || "Error when trying to call the Clarifai API");
-                console.log('error')
-                console.log(error)
                 setError(error.message);
                 return;
             })
@@ -292,7 +282,6 @@ function App() {
                     .then((res) => {
 
                         if(!res.success || !res.score) {
-                            console.log(res)
                             toast.error("Error: Server was not able to log your score please try again");
                             return;
                         }
@@ -317,8 +306,6 @@ function App() {
             .catch(error=>{
                 setLoading(false);
                 toast.error(error?.message || "Error when trying to call the Clarifai API");
-                console.log('error')
-                console.log({error})
                 setError(error.message);
                 return;
             })

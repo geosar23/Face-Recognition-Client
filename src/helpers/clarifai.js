@@ -30,7 +30,6 @@ export const getServerKeys = async () => {
 
 
 export const setupClarifaiAPI_PREDICT_VIA_URL = (imageUrl) => {
-    console.log(CLARIFAI_PAT, CLARIFAI_APP_ID, CLARIFAI_MODEL_ID, CLARIFAI_USER_ID, CLARIFAI_MODEL_VERSION_ID)
 
     // https://docs.clarifai.com/api-guide/predict/images
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -105,8 +104,6 @@ export  const setupClarifaiAPI_PREDICT_VIA_FILE = (image_bytes_string) => {
     // const MODEL_VERSION_ID = CLARIFAI_MODEL_VERSION_ID;   
     
     const IMAGE_BYTES_STRING = image_bytes_string;
-
-    console.log("image_bytes_string",image_bytes_string)
 
     // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
     // https://api.clarifai.com/v2/models/{YOUR_MODEL_ID}/outputs
