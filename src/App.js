@@ -364,7 +364,8 @@ function App() {
     return (
         <div className="App">    
 
-            <ParticlesBg type="circle" bg={true} />
+            <ParticlesBg type="circle" class="fixed" bg={true}/>
+            
             <ToastContainer theme="colored"/>
             <Navigation onRouteChange={onRouteChange} signIn={signIn} user={user}/>
 
