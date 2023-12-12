@@ -21,7 +21,7 @@ const ImageInputForm = ({loading, imageUrl, onURLchange, onFileChange, onLinkSub
                     {loading && imageUrl ? (
                         <span className="mt-2 mb-3 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     ) : (
-                        'Detect via url link'
+                        <span><i className="fa-solid fa-link"></i> Detect via url link</span>
                     )}
                 </button>
 
@@ -42,7 +42,7 @@ const ImageInputForm = ({loading, imageUrl, onURLchange, onFileChange, onLinkSub
                     {loading && !imageUrl? (
                         <span className="mt-2 mb-3 spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     ) : (
-                        'Detect via file'
+                        <span><i className="fa fa-file-arrow-up" aria-hidden="true"></i> Detect via file</span>
                     )}
                 </button>
             </div>

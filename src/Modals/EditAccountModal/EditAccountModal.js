@@ -141,9 +141,9 @@ function EditAccountModal({ show, onHide, onEdit, user }) {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button className="btn-secondary" onClick={onHide}>Close</Button>
+                <Button className="btn-secondary" onClick={onHide}><i className="fa fa-xmark" aria-hidden="true"></i> Close</Button>
                 <Button className="btn-warning" disabled={isLoading} onClick={resetUserValues}><i className="fa fa-refresh" aria-hidden="true"></i> Reset values</Button>
-                <Button className="btn btn-danger" disabled={isLoading} onClick={editUser}>Save</Button>
+                <Button className="btn btn-success" disabled={isLoading} onClick={editUser}><i className="fa fa-save" aria-hidden="true"></i> Save</Button>
             </Modal.Footer>
         </Modal>
     );

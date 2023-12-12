@@ -64,7 +64,7 @@ function AdminPanelModal({ show, onHide }) {
     return (
         <Modal dialogClassName='dark-modal' show={show} size="fullscreen" centered onHide={onHide}>
             <Modal.Header closeButton>
-                <h3>Admin panel</h3>
+                <h3>Admin panel <i className="fa fa-gear" aria-hidden="true"></i></h3>
             </Modal.Header>
 
             <Modal.Body>
@@ -104,9 +104,9 @@ function AdminPanelModal({ show, onHide }) {
                                         <div>
                                             {user.name !== 'admin' && (
                                                 <div> 
-                                                    <button className="m-2 btn btn-sm btn-primary" onClick={() => openEditUserModal(user)}>Edit user</button>
-                                                    <button className="m-2 btn btn-sm btn-warning">Reset password</button>
-                                                    <button className="m-2 btn btn-sm btn-danger" onClick={() => openConfirmationForDeleteAccountModal(user)}>Delete user</button>
+                                                    <button className="m-2 btn btn-sm btn-primary" onClick={() => openEditUserModal(user)}><i className="fa fa-user-pen" aria-hidden="true"></i> Edit user</button>
+                                                    <button className="m-2 btn btn-sm btn-warning"><i className="fa fa-key" aria-hidden="true"></i> Reset password</button>
+                                                    <button className="m-2 btn btn-sm btn-danger" onClick={() => openConfirmationForDeleteAccountModal(user)}><i className="fa fa-trash" aria-hidden="true"></i> Delete user</button>
                                                 </div>
                                             )}
                                         </div>
@@ -120,7 +120,7 @@ function AdminPanelModal({ show, onHide }) {
 
             <Modal.Footer>
                 <Button className="btn btn-secondary" onClick={onHide}>
-                    Close
+                    <i className="fa fa-xmark" aria-hidden="true"></i> Close
                 </Button>
             </Modal.Footer>
         </Modal>

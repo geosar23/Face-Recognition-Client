@@ -41,7 +41,7 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
                         <div>
                             <DeleteAccountModal show={showDeleteModal} onHide={closeDeleteModal} user={user} onDelete={onDelete}/>
                             <button onClick={openConfirmationForDeleteAccountModal} className='btn btn-danger' style={{ margin: '0 10px' }}>
-                                Delete account
+                                <i className="fa fa-trash" aria-hidden="true"></i> Delete account
                             </button>
                         </div>
                     )}
@@ -49,7 +49,7 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
                         <div>
                             {showAdminPanelModal ? <AdminPanelModal show={showAdminPanelModal} onHide={closeAdminPanelModal} user={user}/> : ""}
                             <button onClick={openAdminPanelModal} className='btn btn-primary' style={{ margin: '0 10px' }}>
-                                Admin panel
+                                <i className="fa fa-gear" aria-hidden="true"></i> Admin panel
                             </button>
                         </div>
                     )}

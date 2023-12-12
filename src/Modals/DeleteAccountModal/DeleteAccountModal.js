@@ -55,8 +55,8 @@ function DeleteAccountModal({show, onHide, onDelete, user, adminAccess}) {
             </Modal.Body>
 
             <Modal.Footer>
-                <Button className="btn-secondary" onClick={onHide}>Close</Button>
-                <Button className="btn btn-danger" onClick={deleteUser}>Delete</Button>
+                <Button className="btn-secondary" onClick={onHide}><i className="fa fa-xmark" aria-hidden="true"></i> Close</Button>
+                <Button className="btn btn-danger" onClick={deleteUser}><i className="fa fa-trash" aria-hidden="true"></i> Delete</Button>
             </Modal.Footer>
 
       </Modal>
