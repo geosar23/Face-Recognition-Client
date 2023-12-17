@@ -55,17 +55,17 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
                     )}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <p onClick={() => onRouteChange('signout')} className='f3 link dim black underline pa3 pointer'>Sign Out</p>
+                        <p onClick={() => onRouteChange('signout')} className='btn btn-dark m-3'>Sign Out</p>
                     </div>
                 </nav>
             </div>
         )
     } else {
         return (
-            <nav style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '70px' }}>
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <p onClick={() => onRouteChange('signin')} className='f3 link dim black underline pa3 pointer'>Sign In</p>
-                    <p onClick={() => onRouteChange('register')} className='f3 link dim black underline pa3 pointer'>Register</p>
+            <nav>
+                <div className='d-flex flex-row-reverse'>
+                    <p onClick={() => onRouteChange('register')} className='btn btn-outline-dark m-2'>Register</p>
+                    <p onClick={() => onRouteChange('signin')} className='btn btn-outline-dark m-2'>Sign In</p>
                 </div>
             </nav>
         )
