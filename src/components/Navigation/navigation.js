@@ -55,7 +55,7 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
                     )}
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        <p onClick={() => onRouteChange('signout')} className='btn btn-dark m-3'>Sign Out</p>
+                        <p onClick={() => onRouteChange('signout')} className='btn btn-dark m-3'><i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</p>
                     </div>
                 </nav>
             </div>
@@ -64,8 +64,8 @@ const Navigation = ({ onRouteChange, signIn, user}) => {
         return (
             <nav>
                 <div className='d-flex flex-row-reverse'>
-                    <p onClick={() => onRouteChange('register')} className='btn btn-outline-dark m-2'>Register</p>
-                    <p onClick={() => onRouteChange('signin')} className='btn btn-outline-dark m-2'>Sign In</p>
+                    <p onClick={() => onRouteChange('register')} className='btn btn-outline-dark m-2'><i className="fa-solid fa-circle-user"></i> Create new account</p>
+                    <p onClick={() => onRouteChange('signin')} className='btn btn-outline-dark m-2'><i className="fa-solid fa-arrow-right-to-bracket"></i> Sign In</p>
                 </div>
             </nav>
         )

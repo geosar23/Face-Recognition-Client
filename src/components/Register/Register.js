@@ -144,7 +144,7 @@ function Register({ loadUser, onRouteChange }) {
                             <h4 htmlFor="name">Name</h4>
                             <input
                                 aria-label="name input"
-                                className="form-control center bg-transparent border border-dark w-75"
+                                className="form-control center bg-transparent border border-dark w-75 font-weight-bold"
                                 type="text"
                                 name="name"
                                 id="name"
@@ -185,18 +185,15 @@ function Register({ loadUser, onRouteChange }) {
                         </div>
                     </div>
                     <div className="mt-3">
-                        <button
-                            onClick={onRegister}
-                            className="btn btn-outline-dark button-100"
-                            type="submit"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? (
+                        {isLoading ?
+                            <button className="btn btn-outline-dark button-100" type="submit">
                                 <span className="spinner-border spinner-border-sm pl-5 pr-5" role="status" aria-hidden="true"></span>
-                            ) : (
-                                "Register"
-                            )}
-                        </button>
+                            </button>
+                        :
+                            <button onClick={onRegister} className="btn btn-success" type="submit" disabled={isLoading}>
+                                <span><i className="fa-solid fa-circle-user"></i> Create new account</span>
+                            </button>
+                        }
                     </div>
                 </div>
             </div>

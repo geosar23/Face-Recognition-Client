@@ -96,30 +96,27 @@ function SignIn({ onRouteChange, loadUser }) {
                             />
                             <div className="position-relative">
                                 {
-                                    passwordVisibility ? 
-                                    <i className="fa-solid fa-eye" onClick={visiblePasswordToggle}></i> : 
-                                    <i className="fa-solid fa-eye-slash" onClick={visiblePasswordToggle}></i>
+                                    passwordVisibility ?
+                                        <i className="fa-solid fa-eye" onClick={visiblePasswordToggle}></i> :
+                                        <i className="fa-solid fa-eye-slash" onClick={visiblePasswordToggle}></i>
                                 }
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="mt-3">
-                    <button
-                        onClick={onSubmitSignIn}
-                        className="btn btn-outline-dark button-100"
-                        type="submit"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? (
+                    {isLoading ?
+                        <button className="btn btn-success button-100" type="submit">
                             <span className="spinner-border spinner-border-sm pl-5 pr-5" role="status" aria-hidden="true"></span>
-                        ) : (
-                            "Sign in"
-                        )}
-                    </button>
+                        </button>
+                    :
+                        <button onClick={onSubmitSignIn} className="btn btn-success button-100" type="submit" disabled={isLoading}>
+                            <span><i className="fa-solid fa-arrow-right-to-bracket"></i> Sign in</span>
+                        </button>
+                    }
                 </div>
                 <div className="lh-copy mt3">
-                    <p onClick={() => onRouteChange('register')} href="#0" className="f4 link dim black db pointer">Register</p>
+                    <p onClick={() => onRouteChange('register')} href="#0" className="btn"><i className="fa-solid fa-circle-user"></i> Create new account</p>
                 </div>
             </div>
         </div>
