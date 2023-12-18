@@ -84,7 +84,7 @@ function SignIn({ onRouteChange, loadUser }) {
                     </div>
                     <div className="mt-2">
                         <h4 htmlFor="password">Password</h4>
-                        <div className="d-flex align-items-center"> {/* Added a container for flex layout */}
+                        <div className="d-flex align-items-center">
 
                             <input
                                 aria-label="password input"

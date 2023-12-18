@@ -5,10 +5,11 @@ import './Register.css'
 import { getServerKeys } from '../../helpers/clarifai.js';
 import { saveAuthTokenInSession } from "../../helpers/auth.js";
 
-function Register({loadUser, onRouteChange}) {
+function Register({ loadUser, onRouteChange }) {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordVisibility, setPasswordVisibility] = useState(false);
     const [name, setName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -30,6 +31,17 @@ function Register({loadUser, onRouteChange}) {
         return emailRegex.test(email);
     }
 
+    const visiblePasswordToggle = () => {
+        const passwordInputHtmlElement = document.getElementById("passwordInput");
+        if (passwordInputHtmlElement.type === "password") {
+            passwordInputHtmlElement.type = "text";
+            setPasswordVisibility(true);
+        } else {
+            passwordInputHtmlElement.type = "password"
+            setPasswordVisibility(false);
+        }
+    }
+
     const validatePassword = (password) => {
 
         const MIN_LENGTH = 8;
@@ -38,22 +50,22 @@ function Register({loadUser, onRouteChange}) {
         const hasNumber = /\d/.test(password);
         // const hasSpecialChar = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
 
-        if(password.length < MIN_LENGTH) {
+        if (password.length < MIN_LENGTH) {
             toast.error("Password should be at least 8 characters long");
             return false;
         }
 
-        if(!hasUpperCase) {
+        if (!hasUpperCase) {
             toast.error("Password should have at least 1 upper case character");
             return false;
         }
-        
-        if(!hasLowerCase) {
+
+        if (!hasLowerCase) {
             toast.error("Password should have at least 1 lower case character");
             return false;
         }
-        
-        if(!hasNumber) {
+
+        if (!hasNumber) {
             toast.error("Password should be at least 1 number");
             return false;
         }
@@ -61,7 +73,7 @@ function Register({loadUser, onRouteChange}) {
         return true;
     };
 
-    const validateRegisterInput = () => {     
+    const validateRegisterInput = () => {
         // Validate email
         if (!validateEmail(email)) {
             toast.error("Invalid email address");
@@ -85,7 +97,7 @@ function Register({loadUser, onRouteChange}) {
     const onRegister = () => {
 
         //Comment out for testing
-        if(!validateRegisterInput()) {
+        if (!validateRegisterInput()) {
             return;
         }
 
@@ -101,71 +113,81 @@ function Register({loadUser, onRouteChange}) {
                 name: name
             })
         })
-        .then(res => res.json())
-        .then(async data => {
-            setIsLoading(false);
-            
-           if(!data.success) {
-                let msg = data.message || "Error while trying to register, please try again";
-                toast.error(msg)
-                return; 
-            }
-            saveAuthTokenInSession(data.token);
-            loadUser(data.user);
-            await getServerKeys();
-            onRouteChange('home');
-        })
-        .catch(error=>{
-            setIsLoading(false);
-            toast.error(error?.message || "Server is unable to connect");
-            return;
-        });
+            .then(res => res.json())
+            .then(async data => {
+                setIsLoading(false);
+
+                if (!data.success) {
+                    let msg = data.message || "Error while trying to register, please try again";
+                    toast.error(msg)
+                    return;
+                }
+                saveAuthTokenInSession(data.token);
+                loadUser(data.user);
+                await getServerKeys();
+                onRouteChange('home');
+            })
+            .catch(error => {
+                setIsLoading(false);
+                toast.error(error?.message || "Server is unable to connect");
+                return;
+            });
     }
 
-    return(
-        <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-            <main className="pa4 black-80">
+    return (
+        <div className="br3 ba b--black-10 mv4 mw6 shadow-5 center">
+            <div className="m-4 w-100">
                 <div className="measure">
-                    <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
-                        <legend className="f2 fw6 ph0 mh0">Register</legend>
-                        <div className="mt3">
-                            <label className="db fw6 lh-copy f4" htmlFor="name">Name</label>
-                            <input 
+                    <div id="register" className="ba b--transparent">
+                        <legend className="f2 fw6 ph0 mh0">Create new account</legend>
+                        <div className="mt-2">
+                            <h4 htmlFor="name">Name</h4>
+                            <input
                                 aria-label="name input"
-                                className="pa2 input-reset ba bg-transparent hover-white w-100" 
-                                type="text" 
-                                name="name"  
+                                className="form-control center bg-transparent border border-dark w-75"
+                                type="text"
+                                name="name"
                                 id="name"
                                 onChange={onNameChange}
                             />
                         </div>
-                        <div className="mt3">
-                            <label className="db fw6 lh-copy f4" htmlFor="email-address">Email</label>
-                            <input 
+                        <div className="mt-2">
+                            <h4 htmlFor="email-address">Email</h4>
+                            <input
                                 aria-label="email input"
-                                className="pa2 input-reset ba bg-transparent hover-white w-100" 
-                                type="email" 
-                                name="email-address"  
+                                className="form-control center bg-transparent border border-dark w-75"
+                                type="email"
+                                name="email-address"
                                 id="email-address"
                                 onChange={onEmailChange}
                             />
                         </div>
-                        <div className="mv3">
-                            <label className="db fw6 lh-copy f4" htmlFor="password">Password</label>
-                            <input 
-                                aria-label="password input"
-                                className="b pa2 input-reset ba bg-transparent hover-white w-100" 
-                                type="password" 
-                                name="password"  
-                                id="password"
-                                onChange={onPasswordChange}
-                            />
+                        <div className="mt-2">
+                            <h4 htmlFor="password">Password</h4>
+                            <div className="d-flex align-items-center">
+
+                                <input
+                                    aria-label="password input"
+                                    onChange={onPasswordChange}
+                                    className="form-control center bg-transparent border border-dark w-75"
+                                    type="password"
+                                    name="password"
+                                    id="passwordInput"
+                                />
+                                <div className="position-relative">
+                                    {
+                                        passwordVisibility ?
+                                            <i className="fa-solid fa-eye" onClick={visiblePasswordToggle}></i> :
+                                            <i className="fa-solid fa-eye-slash" onClick={visiblePasswordToggle}></i>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </fieldset>
-                    <div className="">
+                    </div>
+                    <div className="mt-3">
                         <button
                             onClick={onRegister}
-                            className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f4 dib button-120"
+                            className="btn btn-outline-dark button-100"
                             type="submit"
                             disabled={isLoading}
                         >
@@ -177,8 +199,8 @@ function Register({loadUser, onRouteChange}) {
                         </button>
                     </div>
                 </div>
-            </main>
-        </article>
+            </div>
+        </div>
 
     )
 }
