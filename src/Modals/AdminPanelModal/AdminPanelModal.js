@@ -77,44 +77,57 @@ function AdminPanelModal({ show, onHide }) {
                             <i className="text-warning fa fa-refresh p-2" aria-hidden="true"></i>
                         </span>
                     </div>
-                    <table className="table table-striped table-bordered table-dark">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Password</th>
-                                <th>Entries</th>
-                                <th>Score</th>
-                                <th>Joined</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {userData.map((user) => (
-                                <tr key={user.id}>
-                                    <td>{user.id}</td>
-                                    <td>{user.name}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.password}</td>
-                                    <td>{user.entries}</td>
-                                    <td>{user.score}</td>
-                                    <td>{moment(user.joined).format()}</td>
-                                    <td>
-                                        <div>
+                    <div className="container mt-4">
+                        {userData.map((user) => (
+                            <div key={user.id} className="card mb-4">
+                                <div className="card-header font-weight-bold">
+                                    ID: {user.id}
+                                </div>
+                                <div className="card-body custom-card">
+                                    <div className="row">
+                                        <div className="col-md-4">
+                                            <div className="mb-2">
+                                                <strong>Name:</strong> {user.name}
+                                            </div>
+                                            <div className="mb-2">
+                                                <strong>Email:</strong> {user.email}
+                                            </div>
+                                            <div className="mb-2">
+                                                <strong>Password:</strong> {user.password}
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div className="mb-2">
+                                                <strong>Entries:</strong> {user.entries}
+                                            </div>
+                                            <div className="mb-2">
+                                                <strong>Score:</strong> {user.score}
+                                            </div>
+                                            <div className="mb-2">
+                                                <strong>Joined:</strong> {moment(user.joined).format()}
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4 align-self-center">
+                                            
                                             {user.name !== 'admin' && (
-                                                <div> 
-                                                    <button className="m-2 btn btn-sm btn-primary" onClick={() => openEditUserModal(user)}><i className="fa fa-user-pen" aria-hidden="true"></i> Edit user</button>
-                                                    <button className="m-2 btn btn-sm btn-warning"><i className="fa fa-key" aria-hidden="true"></i> Reset password</button>
-                                                    <button className="m-2 btn btn-sm btn-danger" onClick={() => openConfirmationForDeleteAccountModal(user)}><i className="fa fa-trash" aria-hidden="true"></i> Delete user</button>
+                                                <div className="actions-container">
+                                                    <button className="m-2 btn btn-sm btn-primary" onClick={() => openEditUserModal(user)}>
+                                                        <i className="fa fa-user-pen" aria-hidden="true"></i> Edit user
+                                                    </button>
+                                                    <button className="m-2 btn btn-sm btn-warning ml-2">
+                                                        <i className="fa fa-key" aria-hidden="true"></i> Reset password
+                                                    </button>
+                                                    <button className="m-2 btn btn-sm btn-danger ml-2" onClick={() => openConfirmationForDeleteAccountModal(user)}>
+                                                        <i className="fa fa-trash" aria-hidden="true"></i> Delete user
+                                                    </button>
                                                 </div>
                                             )}
                                         </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </Modal.Body>
 
