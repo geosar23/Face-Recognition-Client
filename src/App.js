@@ -12,6 +12,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { getServerKeys ,setupClarifaiAPI_PREDICT_VIA_FILE, setupClarifaiAPI_PREDICT_VIA_URL} from './helpers/clarifai.js';
+import About from './components/About/About.js'
 
 function App() {
 
@@ -26,7 +27,7 @@ function App() {
 
     const [error,setError]=useState(null);
     const [boxes,setBoxes]=useState([]);
-    const [route,setRoute]=useState('signin');
+    const [route,setRoute]=useState('about');
     const [signIn,setSignIn]=useState(false);
     const [user, setUser] = useState({
         id: "",
@@ -369,7 +370,7 @@ function App() {
             </div>
     
             <ToastContainer theme="colored"/>
-            <Navigation onRouteChange={onRouteChange} signIn={signIn} user={user}/>
+            {route ? <Navigation onRouteChange={onRouteChange} route={route} signIn={signIn} user={user}/> : <div></div>}
 
             {route==='home' ? 
                 <div>
@@ -388,8 +389,11 @@ function App() {
                     </div>
             : (route === 'signin') ? 
                 <SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>
-                : <Register loadUser={loadUser} onRouteChange={onRouteChange}/>
-                
+            : (route === 'register') ?
+                <Register loadUser={loadUser} onRouteChange={onRouteChange}/>
+            : (route === 'about') ? 
+                <About onRouteChange={onRouteChange}/>
+            : <h1 className='loading'>Loading...</h1>
             }
         </div>
     );
