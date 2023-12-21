@@ -27,7 +27,7 @@ function App() {
 
     const [error,setError]=useState(null);
     const [boxes,setBoxes]=useState([]);
-    const [route,setRoute]=useState('about');
+    const [route,setRoute]=useState('');
     const [signIn,setSignIn]=useState(false);
     const [user, setUser] = useState({
         id: "",
@@ -74,9 +74,12 @@ function App() {
                 onRouteChange('home');
                 return true;
             }else {
+                onRouteChange('about');
                 return false;
             }
           
+        }else {
+            onRouteChange('about');
         }
     };
 
