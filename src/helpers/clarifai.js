@@ -13,7 +13,7 @@ export const getServerKeys = async () => {
             'Authorization': authorizationToken,
             'Content-Type': 'application/json',
         }
-        const response = await fetch('/serverKeys', {headers});
+        const response = await fetch('/serverKeys', { headers });
         const res = await response.json();
 
         CLARIFAI_PAT = res.data.CLARIFAI_PAT;
@@ -28,8 +28,7 @@ export const getServerKeys = async () => {
     }
 };
 
-
-export const setupClarifaiAPI_PREDICT_VIA_URL = (imageUrl) => {
+export const urlPredict = (imageUrl) => {
 
     // https://docs.clarifai.com/api-guide/predict/images
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +41,7 @@ export const setupClarifaiAPI_PREDICT_VIA_URL = (imageUrl) => {
 
     // Specify the correct user_id/app_id pairings
     // Since you're making inferences outside your app's scope
-    const USER_ID = CLARIFAI_USER_ID;       
+    const USER_ID = CLARIFAI_USER_ID;
     const APP_ID = CLARIFAI_APP_ID;
 
     // Change these to whatever model and image URL you want to use
@@ -84,7 +83,7 @@ export const setupClarifaiAPI_PREDICT_VIA_URL = (imageUrl) => {
 
 }
 
-export  const setupClarifaiAPI_PREDICT_VIA_FILE = (image_bytes_string) => {
+export const filePredict = (image_bytes_string) => {
     // https://docs.clarifai.com/api-guide/predict/images
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     // In this section, we set the user authentication, user and app ID, model details, and the URL
@@ -96,13 +95,13 @@ export  const setupClarifaiAPI_PREDICT_VIA_FILE = (image_bytes_string) => {
 
     // Specify the correct user_id/app_id pairings
     // Since you're making inferences outside your app's scope
-    const USER_ID = CLARIFAI_USER_ID;       
+    const USER_ID = CLARIFAI_USER_ID;
     const APP_ID = CLARIFAI_APP_ID;
 
     // Change these to whatever model and image URL you want to use
     // const MODEL_ID = CLARIFAI_MODEL_ID;
     // const MODEL_VERSION_ID = CLARIFAI_MODEL_VERSION_ID;   
-    
+
     const IMAGE_BYTES_STRING = image_bytes_string;
 
     // NOTE: MODEL_VERSION_ID is optional, you can also call prediction with the MODEL_ID only
@@ -140,4 +139,41 @@ export  const setupClarifaiAPI_PREDICT_VIA_FILE = (image_bytes_string) => {
     };
 
     return requestOptions;
+}
+
+export const saveImageToLocalStorage = (clarifaiResponse, userId) => {
+    let string = getUniqueIdentifierFromClarifaiResponseData(clarifaiResponse);
+    string = userId + string.slice(0, 10);
+
+    if(!string) {
+        return;
+    }
+
+    console.log(string)
+
+    const imagesHistoryArrayString = localStorage.getItem("imagesHistory");
+    console.log(imagesHistoryArrayString)
+
+    const imagesHistoryArray = JSON.parse(localStorage.getItem("imagesHistory")) || [];
+
+    imagesHistoryArray.push(string);
+
+    localStorage.setItem("imagesHistory",JSON.stringify(imagesHistoryArray));
+}
+
+export const checkIfImageHasBeenUploadedAlready = (clarifaiResponse, userId) => {
+    let string = getUniqueIdentifierFromClarifaiResponseData(clarifaiResponse);
+    string = userId + string.slice(0, 10);
+    const imagesHistoryArray = JSON.parse(localStorage.getItem("imagesHistory")) || [];
+    return imagesHistoryArray.includes(string);
+}
+
+const getUniqueIdentifierFromClarifaiResponseData = (clarifaiResponse) => {
+    const imageData = clarifaiResponse?.outputs[0]?.data?.regions;
+    if (imageData?.length === 0) {
+        return null;
+    }
+    const imageUniqueArray = imageData.map(i => i.id);
+    const imageUniqueString = imageUniqueArray.join('');
+    return imageUniqueString;
 }

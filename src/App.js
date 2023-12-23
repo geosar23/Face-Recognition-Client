@@ -1,4 +1,4 @@
-import React , { useEffect, useState, useRef} from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Navigation from './components/Navigation/navigation.js'
 import FaceRecognition from './components/FaceRecognition/FaceRecognition.js'
 import Logo from './components/Logo/logo.js'
@@ -11,13 +11,13 @@ import Register from './components/Register/Register'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { getServerKeys ,setupClarifaiAPI_PREDICT_VIA_FILE, setupClarifaiAPI_PREDICT_VIA_URL} from './helpers/clarifai.js';
+import { getServerKeys, filePredict, urlPredict, saveImageToLocalStorage, checkIfImageHasBeenUploadedAlready } from './helpers/clarifai.js';
 import About from './components/About/About.js'
 
 function App() {
 
     //PREDICT VIA URL METHOD
-    const [imageUrl,setImageUrl] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
 
     //PREDICT VIA FILE METHOD
     const [filepath, setFilepath] = useState(null);
@@ -25,10 +25,10 @@ function App() {
     //IMG SRC TO PROVIDE
     const [imageSrc, setImageSrc] = useState('');
 
-    const [error,setError]=useState(null);
-    const [boxes,setBoxes]=useState([]);
-    const [route,setRoute]=useState('');
-    const [signIn,setSignIn]=useState(false);
+    const [error, setError] = useState(null);
+    const [boxes, setBoxes] = useState([]);
+    const [route, setRoute] = useState('');
+    const [signIn, setSignIn] = useState(false);
     const [user, setUser] = useState({
         id: "",
         name: "",
@@ -47,11 +47,11 @@ function App() {
 
     useEffect(() => {
         checkForToken().then((res) => {
-            if(res) {
+            if (res) {
                 getServerKeys();
             }
         })
-    },[]);
+    }, []);
 
     useEffect(() => {
         cleanState('all')
@@ -59,7 +59,7 @@ function App() {
 
     const checkForToken = async () => {
         const authorizationToken = window.localStorage.getItem('token');
-        if(authorizationToken) {
+        if (authorizationToken) {
             const response = await fetch('/signin', {
                 method: 'post',
                 headers: {
@@ -69,16 +69,16 @@ function App() {
             });
             const res = await response.json();
 
-            if(res.success) {
+            if (res.success) {
                 loadUser(res.user);
                 onRouteChange('home');
                 return true;
-            }else {
+            } else {
                 onRouteChange('about');
                 return false;
             }
-          
-        }else {
+
+        } else {
             onRouteChange('about');
         }
     };
@@ -88,7 +88,7 @@ function App() {
     };
 
     const scrollToImage = () => {
-        if(ref?.current) {
+        if (ref?.current) {
             ref.current?.scrollIntoView({ behavior: 'smooth' });
         }
     };
@@ -111,21 +111,21 @@ function App() {
 
         const numberOfFaces = data.outputs[0]?.data?.regions?.length || 0;
 
-        if(!numberOfFaces) {
+        if (!numberOfFaces) {
             toast.info("No faces recognized in the photo");
             return;
         }
-        
+
         return facesArray.map((face, index) => {
-            const clarifaiFace=face.region_info.bounding_box;
-            const image= document.getElementById('inputImage')
-            const width=Number(image.width)
-            const height=Number(image.height)
+            const clarifaiFace = face.region_info.bounding_box;
+            const image = document.getElementById('inputImage')
+            const width = Number(image.width)
+            const height = Number(image.height)
             return {
-                leftCol:clarifaiFace.left_col * width,
+                leftCol: clarifaiFace.left_col * width,
                 topRow: clarifaiFace.top_row * height,
-                rightCol: width - (clarifaiFace.right_col*width),
-                bottomRow:height - (clarifaiFace.bottom_row*height)
+                rightCol: width - (clarifaiFace.right_col * width),
+                bottomRow: height - (clarifaiFace.bottom_row * height)
             }
         })
     }
@@ -150,22 +150,22 @@ function App() {
         return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.readAsDataURL(filepath);
-        
+
             reader.onload = () => {
                 resolve(reader.result)
             };
-        
+
             reader.onerror = (error) => {
-              console.error('Error converting file to Base64:', error);
-              reject(error)
+                console.error('Error converting file to Base64:', error);
+                reject(error)
             };
         });
     };
 
-    const onLinkSubmition=(event)=>{
+    const onLinkSubmition = (event) => {
         cleanState("file")
 
-        if(!imageUrl) {
+        if (!imageUrl) {
             toast.warning("Please provide a url of an image");
             return;
         }
@@ -175,61 +175,65 @@ function App() {
         // app.models.predict(Clarifai.FACE_DETECT_MODEL,imageUrl)
         // app.models.predict('face-detection', imageUrl)
         setLoading(true);
-        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiAPI_PREDICT_VIA_URL(imageUrl))
+        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", urlPredict(imageUrl))
             .then(response => response.json())
-            .then(response=>{
+            .then(response => {
                 setLoading(false);
-                
-                //Score how many faces you found
-                const facesRecognized = response?.outputs[0]?.data?.regions?.length || 0;
-
-                if(response.status.code!== 10000) {
-
-                    if(response.outputs) {
+                if (response.status.code !== 10000) {
+                    if (response.outputs) {
                         toast.error(`${response.outputs[0].status.description} \n ${response.outputs[0].status.details}`);
                         return;
-                    }else {
+                    } else {
                         toast.error(`${response.status.description} \n ${response.status.details}`);
                         return;
                     }
-
-                   
                 }
-                if(response.status.code === 10000) {
+
+                //Check for duplicate image uploads
+                if (checkIfImageHasBeenUploadedAlready(response, user.id)) {
+                    toast.warning("You cannot use the same image more than once");
+                    return;
+                }
+                //Save image data to local storage
+                saveImageToLocalStorage(response, user.id)
+
+                //Score how many faces you found
+                const facesRecognized = response?.outputs[0]?.data?.regions?.length || 0;
+
+                if (facesRecognized) {
                     const authorizationToken = window.localStorage.getItem('token');
                     fetch('/user/score', {
                         method: 'put',
-                        headers: {'Content-Type': 'application/json','Authorization': authorizationToken},
+                        headers: { 'Content-Type': 'application/json', 'Authorization': authorizationToken },
                         body: JSON.stringify({
                             id: user.id,
                             score: facesRecognized
                         })
                     }).then(res => res.json())
-                    .then((res) => {
+                        .then((res) => {
 
-                        if(!res.success || !res.score) {
-                            toast.error("Error: Server was not able to log your score please try again");
-                            return;
-                        }
+                            if (!res.success || !res.score) {
+                                toast.error("Error: Server was not able to log your score please try again");
+                                return;
+                            }
 
-                        toast.success(`Success, you claimed ${facesRecognized} points !`);
+                            toast.success(`Success, you claimed ${facesRecognized} points !`);
 
-                        setPointsEarned(facesRecognized);
+                            setPointsEarned(facesRecognized);
 
-                        setUser({
-                            ...user,
-                            score: res.score,
-                        });
-                        
-                    })
+                            setUser({
+                                ...user,
+                                score: res.score,
+                            });
+
+                        })
 
                     //Draw the boxes
                     displayFaceBox(calculateFaceLocation(response, false));
-
                     scrollToImage();
                 }
             })
-            .catch(error=>{
+            .catch(error => {
                 setLoading(false);
                 toast.error(error?.message || "Error when trying to call the Clarifai API");
                 setError(error.message);
@@ -241,7 +245,7 @@ function App() {
 
         cleanState("url")
 
-        if(!filepath) {
+        if (!filepath) {
             toast.warning("Please upload an image");
             cleanState("url")
             return;
@@ -252,62 +256,67 @@ function App() {
         const base64Content = base64String.split(',')[1]; // Remove the data URI prefix
 
         setLoading(true);
-        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", setupClarifaiAPI_PREDICT_VIA_FILE(base64Content))
+        fetch("https://api.clarifai.com/v2/models/face-detection/outputs", filePredict(base64Content))
             .then(response => response.json())
-            .then(response=>{
+            .then(response => {
                 setLoading(false);
 
-                if(response.status.code!== 10000) {
-
-                    if(response.outputs[0]) {
+                if (response.status.code !== 10000) {
+                    if (response.outputs[0]) {
                         toast.error(`${response.outputs[0].status.description} \n ${response.outputs[0].status.details}`);
                         return;
-                    }else {
+                    } else {
                         toast.error(`${response.status.description} \n ${response.status.details}`);
                         return;
                     }
-
-                   
                 }
+
+                //Check for duplicate image uploads
+                if (checkIfImageHasBeenUploadedAlready(response, user.id)) {
+                    toast.warning("You cannot use the same image more than once");
+                    return;
+                }
+                //Save image data to local storage
+                saveImageToLocalStorage(response, user.id);
 
                 //Score how many faces you found
                 const facesRecognized = response?.outputs[0]?.data?.regions?.length || 0;
-             
-                if(response.status.code === 10000) {
+
+                if (facesRecognized) {
                     const authorizationToken = window.localStorage.getItem('token');
                     fetch('/user/score', {
                         method: 'put',
-                        headers: {'Content-Type': 'application/json','Authorization': authorizationToken},
+                        headers: { 'Content-Type': 'application/json', 'Authorization': authorizationToken },
                         body: JSON.stringify({
                             id: user.id,
-                            score: facesRecognized*2
+                            score: facesRecognized * 2
                         })
                     }).then(res => res.json())
-                    .then((res) => {
+                        .then((res) => {
 
-                        if(!res.success || !res.score) {
-                            toast.error("Error: Server was not able to log your score please try again");
-                            return;
-                        }
+                            if (!res.success || !res.score) {
+                                toast.error("Error: Server was not able to log your score please try again");
+                                return;
+                            }
 
-                        toast.success(`Success, you claimed ${facesRecognized * 2} points !`);
+                            toast.success(`Success, you claimed ${facesRecognized * 2} points !`);
 
-                        setPointsEarned(facesRecognized*2);
+                            setPointsEarned(facesRecognized * 2);
 
-                        setUser({
-                            ...user,
-                            score: res.score,
-                        });
+                            setUser({
+                                ...user,
+                                score: res.score,
+                            });
 
-                        scrollToImage();
-                        
-                    })
+                            scrollToImage();
+
+                        })
 
                     //Draw the boxes
-                    displayFaceBox(calculateFaceLocation(response, true)) 
+                    displayFaceBox(calculateFaceLocation(response, true))
                 }
             })
-            .catch(error=>{
+            .catch(error => {
                 setLoading(false);
                 toast.error(error?.message || "Error when trying to call the Clarifai API");
                 setError(error.message);
@@ -317,34 +326,34 @@ function App() {
 
     const cleanState = (mode) => {
 
-        if(mode === 'all') {
+        if (mode === 'all') {
             setPointsEarned(0)
             setImageUrl('');
             setImageSrc('');
             setFilepath(null);
             setBoxes([]);
-            if(document.getElementById('formFile')?.value) {
+            if (document.getElementById('formFile')?.value) {
                 document.getElementById('formFile').value = "";
             }
             return;
         }
 
-        if(mode === "file") {
+        if (mode === "file") {
             setFilepath(null);
             setBoxes([]);
-            if(document.getElementById('formFile')?.value) {
+            if (document.getElementById('formFile')?.value) {
                 document.getElementById('formFile').value = "";
             }
             return;
         }
 
-        if(mode === "url") {
+        if (mode === "url") {
             setImageUrl('')
             setBoxes([]);
             return;
         }
 
-        if(mode === "boxes") {
+        if (mode === "boxes") {
             setBoxes([]);
             return;
         }
@@ -354,10 +363,10 @@ function App() {
 
         cleanState('all');
 
-        if(route === 'signout'){
+        if (route === 'signout') {
             handleLogout();
             setSignIn(false);
-        }else if(route === 'home'){
+        } else if (route === 'home') {
             setSignIn(true);
         }
 
@@ -366,37 +375,37 @@ function App() {
     }
 
     return (
-        <div className="App">    
+        <div className="App">
 
             <div className="background-container">
-                <ParticlesBg type="circle" bg={true}/>
+                <ParticlesBg type="circle" bg={true} />
             </div>
-    
-            <ToastContainer theme="colored"/>
-            {route ? <Navigation onRouteChange={onRouteChange} route={route} signIn={signIn} user={user}/> : <div></div>}
 
-            {route==='home' ? 
+            <ToastContainer theme="colored" />
+            {route ? <Navigation onRouteChange={onRouteChange} route={route} signIn={signIn} user={user} /> : <div></div>}
+
+            {route === 'home' ?
                 <div>
                     <Logo />
-                    <Rank user={user} pointsEarned={pointsEarned}/>
-                    <ImageInputForm 
-                        loading={loading} 
+                    <Rank user={user} pointsEarned={pointsEarned} />
+                    <ImageInputForm
+                        loading={loading}
                         imageUrl={imageUrl}
-                        onURLchange={onURLchange} 
-                        onLinkSubmition={onLinkSubmition} 
+                        onURLchange={onURLchange}
+                        onLinkSubmition={onLinkSubmition}
                         onFileChange={onFileChange}
-                        onFileUpload={onFileUpload}/>
-                        <div ref={ref} className='mb-5'>
-                            <FaceRecognition imageSrc={imageSrc} boxes={boxes} />
-                        </div>             
+                        onFileUpload={onFileUpload} />
+                    <div ref={ref} className='mb-5'>
+                        <FaceRecognition imageSrc={imageSrc} boxes={boxes} />
                     </div>
-            : (route === 'signin') ? 
-                <SignIn loadUser={loadUser} onRouteChange={onRouteChange}/>
-            : (route === 'register') ?
-                <Register loadUser={loadUser} onRouteChange={onRouteChange}/>
-            : (route === 'about') ? 
-                <About onRouteChange={onRouteChange}/>
-            : <h1 className='loading'>Loading...</h1>
+                </div>
+                : (route === 'signin') ?
+                    <SignIn loadUser={loadUser} onRouteChange={onRouteChange} />
+                    : (route === 'register') ?
+                        <Register loadUser={loadUser} onRouteChange={onRouteChange} />
+                        : (route === 'about') ?
+                            <About onRouteChange={onRouteChange} />
+                            : <h1 className='loading'>Loading...</h1>
             }
         </div>
     );
