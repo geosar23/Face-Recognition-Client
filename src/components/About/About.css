@@ -1,26 +1,21 @@
-a {
+#buttonLink:link {
+    color: #212529;
+}
+
+#buttonLink:visited {
+    color: #212529;
+}
+
+#buttonLink:hover {
+    color: white;
+}
+
+#buttonLink:active {
+    color: white;
+}
+
+#buttonLink {
     text-decoration: none;
-}
-
-/* unvisited link */
-a:link {
-    color: gray;
-
-}
-
-/* visited link */
-a:visited {
-    color: black;
-}
-
-/* mouse over link */
-a:hover {
-    color: white;
-}
-
-/* selected link */
-a:active {
-    color: white;
 }
 
 .enlarge-on-hover {
@@ -30,33 +25,3 @@ a:active {
 .enlarge-on-hover:hover {
     transform: scale(1.1);
 }
-
-.name-label {
-    /* font-size: 24px; */
-    color: #333;
-    position: relative;
-    display: inline-block;
-    transition: color 0.3s ease-in-out;
-  }
-
-  .name-label::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background-color: #333;
-    transform: scaleX(0);
-    transform-origin: bottom right;
-    transition: transform 0.3s ease-in-out;
-  }
-
-  .name-label:hover {
-    color: #ff5733;
-  }
-
-  .name-label:hover::before {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-  }
