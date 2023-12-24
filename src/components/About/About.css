@@ -1,20 +1,20 @@
-#buttonLink:link {
+.buttonLink:link {
     color: #212529;
 }
 
-#buttonLink:visited {
+.buttonLink:visited {
     color: #212529;
 }
 
-#buttonLink:hover {
+.buttonLink:hover {
     color: white;
 }
 
-#buttonLink:active {
+.buttonLink:active {
     color: white;
 }
 
-#buttonLink {
+.buttonLink {
     text-decoration: none;
 }
 

@@ -137,9 +137,9 @@ function Register({ loadUser, onRouteChange }) {
     return (
         <div className="br3 ba b--black-10 mv4 mw6 shadow-5 center">
             <div className="m-4 w-100">
-                <div className="measure">
+                <div>
                     <div id="register" className="ba b--transparent">
-                        <legend className="f2 fw6 ph0 mh0">Create new account</legend>
+                        <h1>Create new account</h1>
                         <div className="mt-2">
                             <h4 htmlFor="name">Name</h4>
                             <input
@@ -189,11 +189,14 @@ function Register({ loadUser, onRouteChange }) {
                             <button className="btn btn-outline-dark button-100" type="submit">
                                 <span className="spinner-border spinner-border-sm pl-5 pr-5" role="status" aria-hidden="true"></span>
                             </button>
-                        :
+                            :
                             <button onClick={onRegister} className="btn btn-success" type="submit" disabled={isLoading}>
                                 <span><i className="fa-solid fa-circle-user"></i> Create new account</span>
                             </button>
                         }
+                    </div>
+                    <div className="mt-3">
+                        <p onClick={() => onRouteChange('signin')} href="#0" className="btn"><i className="fa-solid fa-arrow-right-to-bracket"></i> Sign in</p>
                     </div>
                 </div>
             </div>

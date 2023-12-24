@@ -70,7 +70,7 @@ function SignIn({ onRouteChange, loadUser }) {
         <div className="br3 ba b--black-10 mv4 mw6 shadow-5 center">
             <div className="m-4 w-100">
                 <div id="sign_up" className="ba b--transparent">
-                    <legend className="f2 fw6 ph0 mh0">Sign In</legend>
+                    <h1>Sign In</h1>
                     <div className="mt-2">
                         <h4 htmlFor="email-address">Email</h4>
                         <input
@@ -115,7 +115,7 @@ function SignIn({ onRouteChange, loadUser }) {
                         </button>
                     }
                 </div>
-                <div className="lh-copy mt3">
+                <div className="mt-3">
                     <p onClick={() => onRouteChange('register')} href="#0" className="btn"><i className="fa-solid fa-circle-user"></i> Create new account</p>
                 </div>
             </div>

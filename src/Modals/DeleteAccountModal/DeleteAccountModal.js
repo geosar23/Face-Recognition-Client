@@ -1,12 +1,9 @@
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { toast } from 'react-toastify';
+import { capitalizeFirstLetter } from '../../helpers/general';
 
 function DeleteAccountModal({show, onHide, onDelete, user, adminAccess}) {
-
-    const capitalizeFirstLetter = (string) => {
-        return string ? string[0]?.toUpperCase() + string.slice(1) : undefined;
-    }
 
     const deleteUser = () => {
         const authorizationToken = window.localStorage.getItem('token');

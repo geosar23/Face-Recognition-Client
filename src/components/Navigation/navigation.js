@@ -47,14 +47,14 @@ const Navigation = ({ onRouteChange, signIn, user, route }) => {
         <div>
             {showAdminPanelModal ? <AdminPanelModal show={showAdminPanelModal} onHide={closeAdminPanelModal} user={user} /> : ""}
             <DeleteAccountModal show={showDeleteModal} onHide={closeDeleteModal} user={user} onDelete={onDelete} />
-            <Navbar key={false} expand={false} className="mb-3 bg-transparent">
+            <Navbar key={false} expand={false} className="mb-3">
                 <Container fluid>
                     <Navbar.Brand href="#"></Navbar.Brand>
                     <Navbar.Toggle onClick={() => setOffcanvasVisible(!offcanvasVisible)} />
                     <Navbar.Offcanvas placement="end" className="bg-dark" show={offcanvasVisible}  onHide={() => setOffcanvasVisible(false)} onExit={() => setOffcanvasVisible(false)} >
                         <Offcanvas.Header closeButton>
                         </Offcanvas.Header>
-                        <Offcanvas.Body className='bg-transparent'>
+                        <Offcanvas.Body>
 
                             <Nav className="text-center">
                                 {signIn ?
